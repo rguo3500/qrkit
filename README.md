@@ -67,3 +67,11 @@ Run `pnpm test:e2e` to execute the Playwright suite. The local suite verifies th
 ## Production domain and Search Console
 
 Set `PUBLIC_SITE_URL` or `VITE_SITE_URL` before `pnpm run build` to generate absolute links in `client/public/feed.xml` and `client/public/sitemap.xml`. The build runs `scripts/generate-seo.mjs` automatically. Follow `SEARCH_CONSOLE.md` after publishing to verify the domain, submit the sitemap, inspect canonical URLs, and review anonymous `seo_route_view` and `code_export` events.
+
+## Cloudflare deployment targets
+
+The repository now separates the two Cloudflare targets. For **Cloudflare Pages**, use the build command `pnpm run build` and output directory `dist/public`; `wrangler.toml` contains `pages_build_output_dir = "dist/public"`. Do not use `npx vitepress build`—QRKit is a Vite application, not a VitePress site. For **Cloudflare Workers + D1**, use `pnpm run deploy`, which explicitly reads `wrangler.worker.jsonc` and the `worker/index.ts` entrypoint. This avoids the Pages builder attempting to interpret the Worker config and produces the warning seen in the supplied deployment log.
+
+A successful Pages deploy publishes the static QRKit UI, RSS, sitemap, and browser tools. It does not automatically publish `/r/:id` as a D1-backed Worker route; deploy that Worker separately after adding the D1 binding and applying `d1-migrations/`.
+
+The Pages configuration was locally validated with `pnpm run validate:pages` after a production build: it recognized `pages_build_output_dir=dist/public` and confirmed that the Pages file has no Worker `main` entry. The Worker configuration was separately validated with `pnpm exec wrangler deploy --config wrangler.worker.jsonc --dry-run`, which detected the `ASSETS` binding and exited without publishing. The supplied log’s final “Assets published!” therefore corresponds to the static Pages path; the earlier Wrangler warning came from the old mixed configuration and is addressed by this split.

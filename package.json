@@ -12,7 +12,8 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "deploy": "pnpm run build && wrangler deploy"
+    "validate:pages": "node scripts/validate-pages-config.mjs",
+    "deploy": "pnpm run build && wrangler deploy --config wrangler.worker.jsonc"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.693.0",

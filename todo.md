@@ -18,8 +18,8 @@
 
 ## 交付
 - [x] 截取代表性页面并验证移动端
-- [ ] 保存完善版本 checkpoint
-- [ ] 向用户报告本阶段完成内容与下一阶段建议
+- [x] 保存完善版本 checkpoint
+- [x] 向用户报告本阶段完成内容与下一阶段建议
 
 ## 第二轮完善
 - [x] 增加 Worker `/r/:id` 动态跳转路由
@@ -29,7 +29,7 @@
 - [x] 为 Blog 增加站内搜索和分类筛选
 - [x] 补充更多长尾 SEO 文章与 sitemap 路由
 - [x] 完成第二轮 check、test、build 与截图验证
-- [ ] 保存第二轮完善版本 checkpoint
+- [x] 保存第二轮完善版本 checkpoint
 
 ## 第三轮逐条执行
 - [x] 创建 Cloudflare D1 schema migration 与 seed-free 管理接口类型
@@ -40,7 +40,7 @@
 - [x] 生成 RSS feed.xml 与补全 sitemap 长尾路由
 - [x] 增加基础 SEO 监测事件与文档说明
 - [x] 完成第三轮 check、test、build 与截图验证
-- [ ] 保存第三轮完善版本 checkpoint
+- [x] 保存第三轮完善版本 checkpoint
 
 ## 第四轮逐条执行
 - [x] 配置真实 D1 migration 执行说明与正式 binding 模板
@@ -50,9 +50,16 @@
 - [x] 将 RSS/sitemap 域名改为环境变量生成策略
 - [x] 增加 Search Console 验证与提交文档
 - [x] 完成第四轮 check、test、build 与浏览器验证
-- [ ] 保存第四轮完善版本 checkpoint
+- [x] 保存第四轮完善版本 checkpoint
 
 ## 第四轮修正项
 - [x] 提供真正可用的 Cloudflare D1 binding 模板与 migration/apply 流程，并明确它与当前 MySQL/TiDB Drizzle 数据库的边界
 - [x] 为 Worker 增加可执行 fixture，覆盖 active 302、inactive/missing 404 与 scan event 记录
 - [x] 重新运行 check、Vitest、Playwright、build，并记录 Worker 未部署时的测试边界
+
+## Cloudflare 部署日志修正
+- [x] 确认 Pages 的静态构建输出目录与当前 Vite/全栈构建流程
+- [x] 将 Pages 配置与 Worker/D1 配置拆分，避免 Pages 误读 Worker Wrangler 文件
+- [x] 更新部署 README，明确静态站点部署与 Dynamic QR Worker 部署是两条路径
+- [x] 验证本地构建输出、Pages 配置文件和 Worker dry-run
+- [x] 保存部署配置修正 checkpoint
