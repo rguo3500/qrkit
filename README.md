@@ -40,4 +40,8 @@ The homepage, generator pages, and Blog pages are lazy-loaded through route-leve
 
 ## Dynamic QR extension boundary
 
-`client/src/lib/dynamicQr.ts` defines the future `DynamicQrRepository`, `DynamicQrRecord`, `ScanEvent`, and `resolveDynamicQr()` contract. A Cloudflare Worker can later map `/r/:id` to this resolver, record a scan event, and return a 302 redirect without changing the browser-local static QR flow. The file also documents the planned D1 table vocabulary for users, QR codes, dynamic links, scans, and subscriptions.
+`client/src/lib/dynamicQr.ts` defines the `DynamicQrRepository`, `DynamicQrRecord`, `ScanEvent`, and `resolveDynamicQr()` contract. The production boundary now also exists in `worker/index.ts`: `/r/:id` looks up an active link from the optional D1 binding, validates the destination scheme, records a privacy-limited scan event, and returns a 302 redirect. When D1 is not configured, the route safely returns 404 and all static assets continue to work.
+
+To enable the D1-backed route, create a D1 database and add a `d1_databases` binding named `DB` in `wrangler.jsonc`. The local `wrangler` dev dependency is included, so `pnpm exec wrangler deploy --dry-run` validates the Worker bundle and `pnpm run deploy` builds and deploys it. The current dry-run validates the Worker and Static Assets binding without making a live deployment.
+
+The barcode engine now validates ISBN-10, ISBN-13, Code 39, EAN-13, UPC-A, and ITF-14 cases. The test suite includes 11 passing assertions across QR payloads, checksum errors, ISBN formats, Code 39 symbols, ITF-14 calculation, and sanitized download filenames.

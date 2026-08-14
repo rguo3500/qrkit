@@ -20,3 +20,13 @@
 - [x] 截取代表性页面并验证移动端
 - [ ] 保存完善版本 checkpoint
 - [ ] 向用户报告本阶段完成内容与下一阶段建议
+
+## 第二轮完善
+- [x] 增加 Worker `/r/:id` 动态跳转路由
+- [x] 增加 D1 repository 适配边界与环境类型
+- [x] 扩展 ISBN-10/13、Code 39、ITF-14 校验测试
+- [x] 增加浏览器级 PNG/SVG 下载测试边界
+- [x] 为 Blog 增加站内搜索和分类筛选
+- [x] 补充更多长尾 SEO 文章与 sitemap 路由
+- [x] 完成第二轮 check、test、build 与截图验证
+- [ ] 保存第二轮完善版本 checkpoint

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { checksum, normalizeRetail, qrPayload, sanitizeFilename } from './tools';
+import { checksum, normalizeIsbn, normalizeRetail, qrPayload, sanitizeFilename, validateCode39 } from './tools';
 
 describe('QR payload builders', () => {
   it('builds a URL payload without changing unicode text', () => {
@@ -30,6 +30,18 @@ describe('barcode validation', () => {
   });
   it('accepts a valid full EAN-13 value', () => {
     expect(normalizeRetail('5901234123457', 'EAN13').error).toBe('');
+  });
+  it('validates ISBN-10 and ISBN-13', () => {
+    expect(normalizeIsbn('0-306-40615-2').error).toBe('');
+    expect(normalizeIsbn('978-0-306-40615-7').error).toBe('');
+    expect(normalizeIsbn('0-306-40615-3').error).toBe('Invalid ISBN-10 checksum.');
+  });
+  it('validates Code 39 symbols and rejects unsupported characters', () => {
+    expect(validateCode39('QRKIT-39 / 2026').error).toBe('');
+    expect(validateCode39('QRKIT@39').error).toBe('Invalid Code 39 value.');
+  });
+  it('calculates and validates an ITF-14 check digit', () => {
+    expect(normalizeRetail('1001234567890', 'ITF14')).toEqual({ value: '10012345678902', error: '' });
   });
   it('sanitizes download names', () => {
     expect(sanitizeFilename('EAN-13 Barcode / Test')).toBe('ean-13-barcode-test');
