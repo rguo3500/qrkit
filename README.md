@@ -1,6 +1,6 @@
 # QRKit
 
-QRKit is a mobile-first, SEO-first QR Code and Barcode toolkit built with React, TypeScript, Vite, Tailwind CSS, and browser-local generation. Static inputs are processed locally whenever possible; the first version has no database and no payment flow.
+QRKit is a mobile-first, SEO-first QR Code and Barcode toolkit built with React 19, TypeScript, Vite, Tailwind CSS, tRPC, Drizzle ORM, Manus OAuth, and Cloudflare Pages/D1. Static inputs are processed locally whenever possible, while authenticated Dynamic QR management, analytics, branded batch generation, and team collaboration are backed by protected server procedures.
 
 ## Run locally
 
@@ -28,7 +28,7 @@ The requested `npm install`, `npm run dev`, and `npm run build` commands are als
 
 ## Architecture
 
-The tool registry in `client/src/lib/tools.ts` is the extension point for adding new tools. Payload builders, retail checksum helpers, and filename sanitization are kept separate from page UI. QR generation uses `qrcode`; barcode generation uses `jsbarcode`; both run in the browser. The current UI contains category routes, individual SEO tool routes, related tools, pricing preview, guides, and legal pages. Future Dynamic QR, analytics, and Cloudflare D1 interfaces should be added without changing static generation behavior.
+The tool registry in `client/src/lib/tools.ts` is the extension point for adding new tools. Payload builders, retail checksum helpers, and filename sanitization are kept separate from page UI. QR generation uses `qrcode`; barcode generation uses `jsbarcode`; both run in the browser. The current UI contains category routes, individual SEO tool routes, related tools, guides, legal pages, Dynamic QR management, analytics, Brand + Batch, and Team Workspace. Static generation remains local and independent from the authenticated application data path.
 
 ## SEO and privacy notes
 
@@ -36,7 +36,7 @@ Every route now writes its own title, description, canonical URL, Open Graph tag
 
 ## Performance and tests
 
-The homepage, generator pages, and Blog pages are lazy-loaded through route-level `import()` boundaries. Core payload and validation behavior is covered by `client/src/lib/tools.test.ts`; run `pnpm exec vitest run client/src/lib/tools.test.ts` to execute the current suite. The test coverage includes URL, WiFi, vCard, email, EAN-13, UPC-A, checksum, and filename sanitization cases.
+The homepage, generator pages, Blog pages, Dynamic QR, Brand + Batch, and Team Workspace are lazy-loaded through route-level `import()` boundaries. Run `pnpm test` for the full Vitest suite, `pnpm check` for TypeScript validation, `pnpm build` for the production build, and `pnpm test:e2e` for Playwright browser tests. The final regression suite includes 13 Vitest files and 40 passing assertions, while the local Playwright run completed 4 tests with 2 authentication/deployment-dependent scenarios skipped when no storage state or Worker URL was supplied.
 
 ## Dynamic QR extension boundary
 
@@ -46,9 +46,11 @@ To enable the D1-backed route, create a D1 database and add a `d1_databases` bin
 
 The barcode engine now validates ISBN-10, ISBN-13, Code 39, EAN-13, UPC-A, and ITF-14 cases. The test suite includes 13 passing assertions across QR payloads, checksum errors, ISBN formats, Code 39 symbols, ITF-14 calculation, export Blobs, safe filenames, and sanitized download filenames.
 
-## Dynamic QR management
+## Dynamic QR management and analytics
 
-`migrations/0001_dynamic_qr.sql` provides a seed-free D1 schema for users, QR codes, dynamic links, scans, and subscriptions. The `/dynamic-qr` page is a local draft management boundary: it validates labels and HTTP(S) destinations, previews the public redirect path, and clearly indicates that persistence requires the D1 binding. This avoids implying that a static demo record has been saved.
+`migrations/0001_dynamic_qr.sql` provides a seed-free D1 schema for users, QR codes, dynamic links, scans, and subscriptions. The authenticated `/dynamic-qr` page uses Manus OAuth, tRPC, and Drizzle to list, create, edit, activate/deactivate, and delete user-owned links. The production redirect path at `/r/:id` validates active status, redirects only to safe HTTP(S) destinations, and records privacy-limited scan metadata.
+
+The Dynamic QR analytics panel displays scan totals, a 14-day daily trend, recent visits, and readable device/referrer summaries. Empty, inactive, missing, and unauthorized states are represented explicitly rather than with demo records. The repository and router enforce ownership on every link and scan query.
 
 ## Blog discovery and monitoring
 
@@ -60,9 +62,19 @@ QRKit now uses the full-stack template’s Manus OAuth and tRPC stack for protec
 
 The Cloudflare Worker has a separate, concrete D1 path for edge-only redirect deployments. `d1-migrations/0001_dynamic_qr.sql` matches the Worker’s SQLite/D1 repository (`user_id`, `qr_code_id`, `slug`, `dynamic_link_id`), while `drizzle/` remains the source of truth for the Manus full-stack application database. Create a D1 database, uncomment the `d1_databases` binding in `wrangler.jsonc`, replace its ID, then run `pnpm exec wrangler d1 migrations apply qrkit --remote` before deploying. This separation prevents accidentally applying MySQL SQL to D1 or treating the Worker as a second source of truth for the authenticated dashboard.
 
+## Brand + Batch generation
+
+The `/brand-batch` workspace supports foreground/background color selection, rounded or shaped QR modules and eyes, quiet-zone sizing, error-correction selection, optional logo placement, CSV/text batch input, per-row validation, preview states, and PNG/SVG ZIP export. Before export, QRKit evaluates contrast, quiet-zone size, and logo coverage against the selected error-correction level. Low-contrast and excessive-logo-risk configurations block export; smaller quiet zones or elevated but acceptable logo risk remain visible warnings.
+
+## Team collaboration
+
+The `/teams` workspace supports team creation, pending member invitations, Owner/Editor/Viewer roles, and Dynamic QR sharing. Owners can invite members and change roles. Owners and Editors can share or remove a Dynamic QR link; Viewers can inspect permitted workspace data but cannot invite, change roles, share, or unshare links. All repository operations require active membership in the requested team, and resource queries are scoped by `teamId` and ownership to prevent cross-team access.
+
+The Team Workspace renders a `Remove share` action for each shared link. The action calls the protected `team.unshareLink` procedure and invalidates the shared-links query after success. The repository-level integration suite directly exercises viewer/editor/owner denial paths, inactive membership rejection, cross-team share/unshare rejection, owned-link sharing, successful unsharing, and unowned-link `NOT_FOUND` behavior.
+
 ## Browser verification
 
-Run `pnpm test:e2e` to execute the Playwright suite. The local suite verifies that the URL QR tool downloads `url-qr-code.png` and `url-qr-code.svg`, and that the Dynamic QR workspace shows its authenticated boundary. Set `PLAYWRIGHT_WORKER_URL` to run the deployed Worker redirect smoke test; it is intentionally skipped when no deployment URL is provided. The deterministic Vitest suite also executes the Worker fixture for active 302 redirects, inactive/missing 404 responses, and privacy-limited scan recording.
+Run `pnpm test:e2e` to execute the Playwright suite. The local suite verifies URL QR PNG/SVG downloads, authenticated Dynamic QR boundaries, the Brand + Batch high-risk recovery flow, and the Team Workspace boundary. Set `PLAYWRIGHT_WORKER_URL` to run the deployed Worker redirect smoke test; it is intentionally skipped when no deployment URL is provided. The deterministic Vitest suite covers QR/barcode payloads, exports, analytics rendering, Dynamic QR repositories, Worker fixtures, Brand + Batch validation, and team permission boundaries.
 
 ## Production domain and Search Console
 
