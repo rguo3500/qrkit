@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>/</loc></url>
+  <url><loc>/qr-codes</loc></url><url><loc>/barcodes</loc></url>
+  <url><loc>/qr-code-generator</loc></url><url><loc>/url-to-qr-code</loc></url><url><loc>/text-to-qr-code</loc></url><url><loc>/wifi-qr-code</loc></url><url><loc>/email-qr-code</loc></url><url><loc>/phone-qr-code</loc></url><url><loc>/sms-qr-code</loc></url><url><loc>/vcard-qr-code</loc></url><url><loc>/location-qr-code</loc></url><url><loc>/whatsapp-qr-code</loc></url><url><loc>/event-qr-code</loc></url>
+  <url><loc>/barcode-generator</loc></url><url><loc>/code-128-generator</loc></url><url><loc>/ean-13-barcode-generator</loc></url><url><loc>/upc-a-barcode-generator</loc></url><url><loc>/code-39-barcode-generator</loc></url><url><loc>/itf-14-barcode-generator</loc></url><url><loc>/isbn-barcode-generator</loc></url>
+  <url><loc>/pricing</loc></url><url><loc>/blog</loc></url><url><loc>/about</loc></url><url><loc>/contact</loc></url><url><loc>/privacy</loc></url><url><loc>/terms</loc></url>
+</urlset>

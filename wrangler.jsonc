@@ -1,0 +1,9 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "qrkit",
+  "compatibility_date": "2026-08-14",
+  "assets": { "directory": "./dist" }
+}
+
+// Deploy with: npx wrangler deploy
+// Production domain is managed by Cloudflare; no account ID or secret is stored here.

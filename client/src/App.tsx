@@ -1,42 +1,19 @@
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
-import ErrorBoundary from "./components/ErrorBoundary";
-import { ThemeProvider } from "./contexts/ThemeContext";
-import Home from "./pages/Home";
+/* QRKit Signal Paper: shared shell uses editorial navigation, clear escape routes, and compact section labels. */
+import { useEffect } from 'react';
+import { Link, Route, Switch, useLocation } from 'wouter';
+import { ArrowUpRight, Menu, QrCode, ScanLine, X } from 'lucide-react';
+import { useState } from 'react';
+import Home from './pages/Home';
+import ToolPage from './pages/ToolPage';
+import { qrTools, barcodeTools } from './lib/tools';
+import './index.css';
 
-
-function Router() {
-  return (
-    <Switch>
-      <Route path={"/"} component={Home} />
-      <Route path={"/404"} component={NotFound} />
-      {/* Final fallback route */}
-      <Route component={NotFound} />
-    </Switch>
-  );
+function Shell({children}:{children:React.ReactNode}){
+ const [menu,setMenu]=useState(false); const [location]=useLocation();
+ useEffect(()=>{window.scrollTo(0,0)},[location]);
+ return <div className="min-h-screen overflow-x-hidden"><header className="sticky top-0 z-40 border-b border-[#d7d0c4]/80 bg-[#f4f0e8]/90 backdrop-blur-xl"><div className="container flex h-[72px] items-center justify-between"><Link href="/" className="flex items-center gap-3" aria-label="QRKit home"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[#171916] shadow-[0_3px_0_#ff5b2e]"><img src="/manus-storage/qrkit-mark_4bb681f8.png" alt="" className="h-7 w-7"/></span><span className="font-display text-[1.35rem] font-extrabold tracking-[-.06em]">QR<span className="text-[#ff5b2e]">Kit</span></span></Link><nav className="hidden items-center gap-7 md:flex"><Link href="/qr-codes" className="font-mono text-[.7rem] uppercase tracking-[.14em] text-[#6f746d] transition-colors hover:text-[#171916]">QR codes</Link><Link href="/barcodes" className="font-mono text-[.7rem] uppercase tracking-[.14em] text-[#6f746d] transition-colors hover:text-[#171916]">Barcodes</Link><Link href="/blog" className="font-mono text-[.7rem] uppercase tracking-[.14em] text-[#6f746d] transition-colors hover:text-[#171916]">Guides</Link><Link href="/pricing" className="btn-secondary !px-4 !py-2">Pro preview <ArrowUpRight size={14}/></Link></nav><button className="btn-ghost md:hidden" onClick={()=>setMenu(!menu)} aria-label="Toggle menu">{menu?<X size={22}/>:<Menu size={22}/>}</button></div>{menu&&<div className="container border-t border-[#d7d0c4] py-4 md:hidden"><div className="grid gap-1"><Link onClick={()=>setMenu(false)} href="/qr-codes" className="rounded-lg px-3 py-3 font-mono text-xs uppercase tracking-wider hover:bg-[#e7e1d5]">QR codes</Link><Link onClick={()=>setMenu(false)} href="/barcodes" className="rounded-lg px-3 py-3 font-mono text-xs uppercase tracking-wider hover:bg-[#e7e1d5]">Barcodes</Link><Link onClick={()=>setMenu(false)} href="/pricing" className="rounded-lg px-3 py-3 font-mono text-xs uppercase tracking-wider hover:bg-[#e7e1d5]">Pro preview</Link></div></div>}</header>{children}<footer className="border-t border-[#d7d0c4] bg-[#171916] text-[#f4f0e8]"><div className="container grid gap-10 py-14 md:grid-cols-[1.4fr_1fr_1fr_1fr]"><div><div className="mb-4 flex items-center gap-3"><span className="grid h-9 w-9 place-items-center rounded-lg bg-[#ff5b2e] text-[#171916]"><ScanLine size={19}/></span><span className="font-display text-xl font-extrabold">QRKit</span></div><p className="max-w-xs text-sm leading-6 text-[#b9b6ad]">Built in your browser. Ready when you are. Free QR and barcode tools for the web, print, and everyday work.</p></div><div><p className="eyebrow !text-[#ff8b6b]">Tools</p><div className="mt-4 grid gap-3 text-sm text-[#d4d0c5]"><Link href="/url-to-qr-code">URL QR Code</Link><Link href="/wifi-qr-code">WiFi QR Code</Link><Link href="/vcard-qr-code">vCard QR Code</Link><Link href="/code-128-generator">Code 128</Link></div></div><div><p className="eyebrow !text-[#ff8b6b]">Learn</p><div className="mt-4 grid gap-3 text-sm text-[#d4d0c5]"><Link href="/blog">QR guides</Link><Link href="/about">About QRKit</Link><Link href="/pricing">Pricing</Link></div></div><div><p className="eyebrow !text-[#ff8b6b]">Legal</p><div className="mt-4 grid gap-3 text-sm text-[#d4d0c5]"><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><Link href="/contact">Contact</Link></div></div></div><div className="container flex flex-col justify-between gap-3 border-t border-white/10 py-5 text-xs text-[#8d8e88] md:flex-row"><span>© 2026 QRKit. Free tools, thoughtfully made.</span><span className="font-mono">LOCAL-FIRST / NO ACCOUNT REQUIRED</span></div></footer></div>
 }
-
-// NOTE: About Theme
-// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
-//   to keep consistent foreground/background color across components
-// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
-
-function App() {
-  return (
-    <ErrorBoundary>
-      <ThemeProvider
-        defaultTheme="light"
-        // switchable
-      >
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </ThemeProvider>
-    </ErrorBoundary>
-  );
-}
-
-export default App;
+function Category({kind}:{kind:'qr'|'barcode'}){const list=kind==='qr'?qrTools:barcodeTools; return <div className="container py-16"><div className="max-w-3xl"><p className="eyebrow">{kind==='qr'?'01 / QR code tools':'02 / Barcode tools'}</p><h1 className="mt-4 font-display text-5xl font-extrabold tracking-[-.06em] md:text-7xl">{kind==='qr'?'QR codes, made clear.':'Barcodes, ready to scan.'}</h1><p className="mt-6 max-w-2xl text-lg leading-8 text-[#6f746d]">{kind==='qr'?'Create free QR codes for links, WiFi, contact cards, events, and more — with every input processed locally whenever possible.':'Generate dependable barcodes for retail, shipping, inventory, and ISBN use cases with real checksum validation.'}</p></div><div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">{list.map((tool,i)=><Link href={'/'+tool.slug} key={tool.slug} className="lift paper-panel scan-corners rounded-2xl border p-6"><span className="font-mono text-xs text-[#ff5b2e]">{String(i+1).padStart(2,'0')}</span><h2 className="mt-7 font-display text-xl font-bold">{tool.name}</h2><p className="mt-2 text-sm leading-6 text-[#6f746d]">{tool.description}</p><span className="mt-6 inline-flex items-center gap-1 font-mono text-[.68rem] uppercase tracking-wider text-[#0e5b5d]">Open tool <ArrowUpRight size={14}/></span></Link>)}</div></div>}
+function SimplePage({title,eyebrow,children}:{title:string;eyebrow:string;children:React.ReactNode}){return <div className="container py-20"><p className="eyebrow">{eyebrow}</p><h1 className="mt-4 max-w-3xl font-display text-5xl font-extrabold tracking-[-.06em] md:text-7xl">{title}</h1><div className="mt-10 max-w-2xl space-y-5 text-lg leading-8 text-[#6f746d]">{children}</div></div>}
+function Router(){return <Switch><Route path="/" component={Home}/><Route path="/qr-codes"><Category kind="qr"/></Route><Route path="/barcodes"><Category kind="barcode"/></Route>{[...qrTools,...barcodeTools].map(t=><Route key={t.slug} path={'/'+t.slug}><ToolPage config={t}/></Route>)}<Route path="/pricing"><SimplePage eyebrow="03 / Pricing preview" title="The free tier is already useful."><p>QRKit is free for static QR and barcode generation, unlimited local use, and PNG/SVG export. A future Pro tier will add dynamic destinations, scan analytics, bulk generation, and advanced brand controls.</p><div className="grid gap-4 pt-4 md:grid-cols-2"><div className="paper-panel rounded-2xl border p-6"><p className="font-mono text-xs text-[#ff5b2e]">FREE / NOW</p><h2 className="mt-5 font-display text-2xl font-bold">Static toolkit</h2><p className="mt-3 text-sm">Unlimited generation, basic customization, PNG and SVG export.</p></div><div className="rounded-2xl border-2 border-[#0e5b5d] bg-[#dce9e5] p-6"><p className="font-mono text-xs text-[#0e5b5d]">PRO / LATER</p><h2 className="mt-5 font-display text-2xl font-bold">Dynamic workspace</h2><p className="mt-3 text-sm">Dynamic QR, analytics, logos, bulk generation, and no ads.</p></div></div></SimplePage></Route><Route path="/blog"><SimplePage eyebrow="04 / Field notes" title="Guides for making codes work harder."><p>Practical notes on QR codes, WiFi sharing, business cards, restaurant menus, dynamic destinations, and the barcode standards behind everyday products.</p><div className="grid gap-3">{['How to Create a QR Code','How to Create a WiFi QR Code','QR Code for a Business Card','Static QR vs Dynamic QR','What Is a Code 128 Barcode','EAN-13 vs UPC-A'].map((x,i)=><div key={x} className="flex items-center justify-between border-b border-[#d7d0c4] py-4"><span className="font-display font-bold">{x}</span><span className="font-mono text-xs text-[#ff5b2e]">0{i+1}</span></div>)}</div></SimplePage></Route><Route path="/about"><SimplePage eyebrow="05 / About QRKit" title="A small tool for a very scannable world."><p>QRKit makes the practical parts of QR and barcode creation feel calm: choose a format, see the result, export what you need. No account is required and static inputs stay in your browser whenever possible.</p></SimplePage></Route><Route path="/contact"><SimplePage eyebrow="06 / Contact" title="Questions, ideas, or a format we should add?"><p>Tell us what you are trying to make and which code standard is getting in the way. QRKit is designed to grow from a focused toolkit into a library of 50+ useful generators.</p></SimplePage></Route><Route path="/privacy"><SimplePage eyebrow="07 / Privacy" title="Privacy, without the mystery."><p>Your static QR and barcode inputs are processed locally in your browser whenever possible. QRKit does not need your URL, WiFi password, phone number, email, or vCard details on a server to generate a static code.</p></SimplePage></Route><Route path="/terms"><SimplePage eyebrow="08 / Terms" title="Use the tools, check the output."><p>QRKit provides generation tools as-is. Before publishing a code, scan it with the devices and applications your audience will use.</p></SimplePage></Route><Route><SimplePage eyebrow="404 / Not found" title="That page moved off the grid."><p>Try one of the tool categories to find a working route.</p><Link className="btn-primary" href="/">Back to home <ArrowUpRight size={15}/></Link></SimplePage></Route></Switch>}
+export default function App(){return <Shell><Router/></Shell>}
