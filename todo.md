@@ -88,10 +88,10 @@
 - [ ] 配置并验证 Cloudflare Pages 部署通知（Account → Notifications → Pages Project updates），确认通知已创建且处于 Enabled 状态
 - [x] 配置正式 Dynamic QR Worker 的 D1 binding
 - [x] 执行线上 Dynamic QR `/r/:id` smoke test
-- [ ] 保存第五轮验证 checkpoint
+- [x] 保存第五轮验证 checkpoint（e620ad81）
 
 ## D1 正式接入
 - [x] 将 Database ID 01546c03-e366-47d9-9523-469010237415 写入 Worker D1 binding 配置
 - [x] 执行远程 D1 migration 并验证 Dynamic QR 表结构
 - [x] 部署 Pages Functions 并执行 `/r/:id` 线上 smoke test（正式路径；独立 Worker 配置保留为可选部署）
-- [ ] 保存 D1 接入 checkpoint
+- [x] 保存 D1 接入 checkpoint（e620ad81）
