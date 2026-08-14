@@ -68,9 +68,15 @@
 - [x] 核对 Pages 项目当前构建命令、输出目录与仓库配置
 - [x] 确认 QRKit build 产物可被 Pages 根路径加载
 - [x] 增加 SPA 路由回退配置，避免直接访问 QRKit 子路由 404
-- [ ] 更新部署说明并保存线上 404 修正版 checkpoint
+- [x] 更新部署说明并保存线上 404 修正版 checkpoint
 
 ## 线上 Pages 外部验证
 - [x] 在 Cloudflare Pages 控制台核对 Repository/Branch、Framework preset、Build command 和 Output directory
 - [x] 用 Pages 等效静态服务实际访问构建产物根路径并确认显示 QRKit
-- [ ] 重新部署后验证 `/`、`/url-to-qr-code`、`/blog` 三条线上路径
+- [x] 重新部署后验证 `/`、`/url-to-qr-code`、`/blog` 三条线上路径
+
+## Cloudflare 新部署失败修正
+- [x] 对比远端 cc8f173 与本地 QRKit 文件，确认缺失的 scripts/generate-seo.mjs 等文件
+- [x] 确保远端主分支包含 SEO generator、Pages 配置和 _redirects
+- [x] 在不直接代替用户发布的前提下，准备可审阅的同步提交与部署说明
+- [x] 重新验证 Pages 构建并检查线上 `/`、`/url-to-qr-code`、`/blog`
