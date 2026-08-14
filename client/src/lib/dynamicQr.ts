@@ -1,0 +1,7 @@
+/* QRKit Signal Paper: Dynamic QR stays an explicit future boundary; static QR generation never depends on this module. */
+export type DynamicQrRecord = { id:string; qrCodeId:string; destination:string; active:boolean; createdAt:string; updatedAt:string };
+export type ScanEvent = { id:string; qrCodeId:string; country?:string; device?:string; browser?:string; os?:string; referrer?:string; createdAt:string };
+export type DynamicQrRepository = { getById(id:string):Promise<DynamicQrRecord|null>; recordScan(event:Omit<ScanEvent,'id'|'createdAt'>):Promise<void> };
+export type RedirectResult = { status:302; location:string; record:DynamicQrRecord } | { status:404; location:null; record:null };
+export async function resolveDynamicQr(id:string, repository:DynamicQrRepository, scan?:Omit<ScanEvent,'id'|'qrCodeId'|'createdAt'>):Promise<RedirectResult>{const record=await repository.getById(id);if(!record||!record.active)return {status:404,location:null,record:null};if(scan)await repository.recordScan({qrCodeId:record.qrCodeId,...scan});return {status:302,location:record.destination,record};}
+export const futureD1Tables={users:['id','created_at'],qr_codes:['id','user_id','type','destination','created_at','updated_at'],dynamic_links:['id','qr_code_id','destination','active'],scans:['id','qr_code_id','country','device','browser','created_at'],subscriptions:['id','user_id','plan','status','created_at']} as const;

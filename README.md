@@ -32,4 +32,12 @@ The tool registry in `client/src/lib/tools.ts` is the extension point for adding
 
 ## SEO and privacy notes
 
-Every tool has distinct metadata fields in the tool registry for future route-level title, description, canonical, Open Graph, Twitter Card, BreadcrumbList, WebApplication, and displayed FAQ schema expansion. The static sitemap and robots files are included in `client/public/`. Static QR inputs such as URLs, WiFi passwords, phone numbers, and vCard details are not sent to a server by the generation UI.
+Every route now writes its own title, description, canonical URL, Open Graph tags, Twitter Card tags, and JSON-LD where applicable. Tool pages emit BreadcrumbList, WebApplication, and FAQPage data only for questions visibly rendered on the page. Blog index and article routes have distinct metadata and article content. The static sitemap and robots files are included in `client/public/`. Static QR inputs such as URLs, WiFi passwords, phone numbers, and vCard details are not sent to a server by the generation UI.
+
+## Performance and tests
+
+The homepage, generator pages, and Blog pages are lazy-loaded through route-level `import()` boundaries. Core payload and validation behavior is covered by `client/src/lib/tools.test.ts`; run `pnpm exec vitest run client/src/lib/tools.test.ts` to execute the current suite. The test coverage includes URL, WiFi, vCard, email, EAN-13, UPC-A, checksum, and filename sanitization cases.
+
+## Dynamic QR extension boundary
+
+`client/src/lib/dynamicQr.ts` defines the future `DynamicQrRepository`, `DynamicQrRecord`, `ScanEvent`, and `resolveDynamicQr()` contract. A Cloudflare Worker can later map `/r/:id` to this resolver, record a scan event, and return a 302 redirect without changing the browser-local static QR flow. The file also documents the planned D1 table vocabulary for users, QR codes, dynamic links, scans, and subscriptions.
