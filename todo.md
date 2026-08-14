@@ -84,13 +84,14 @@
 ## 第五轮逐条执行
 - [x] 确认正式站点域名并检查 Cloudflare Pages 当前自定义域名
 - [x] 配置 PUBLIC_SITE_URL 并验证 sitemap/RSS 正式 URL
-- [ ] 配置 Cloudflare Pages 自定义域名与部署通知
+- [x] 配置 Cloudflare Pages 自定义域名（lovexiaoyue.dpdns.org）
+- [ ] 配置并验证 Cloudflare Pages 部署通知（Account → Notifications → Pages Project updates），确认通知已创建且处于 Enabled 状态
 - [x] 配置正式 Dynamic QR Worker 的 D1 binding
-- [ ] 执行线上 Dynamic QR `/r/:id` smoke test
+- [x] 执行线上 Dynamic QR `/r/:id` smoke test
 - [ ] 保存第五轮验证 checkpoint
 
 ## D1 正式接入
 - [x] 将 Database ID 01546c03-e366-47d9-9523-469010237415 写入 Worker D1 binding 配置
 - [x] 执行远程 D1 migration 并验证 Dynamic QR 表结构
-- [ ] 部署 Worker 并执行 `/r/:id` 线上 smoke test
+- [x] 部署 Pages Functions 并执行 `/r/:id` 线上 smoke test（正式路径；独立 Worker 配置保留为可选部署）
 - [ ] 保存 D1 接入 checkpoint
