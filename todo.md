@@ -63,3 +63,14 @@
 - [x] 更新部署 README，明确静态站点部署与 Dynamic QR Worker 部署是两条路径
 - [x] 验证本地构建输出、Pages 配置文件和 Worker dry-run
 - [x] 保存部署配置修正 checkpoint
+
+## 线上 Pages 404 修正
+- [x] 核对 Pages 项目当前构建命令、输出目录与仓库配置
+- [x] 确认 QRKit build 产物可被 Pages 根路径加载
+- [x] 增加 SPA 路由回退配置，避免直接访问 QRKit 子路由 404
+- [ ] 更新部署说明并保存线上 404 修正版 checkpoint
+
+## 线上 Pages 外部验证
+- [x] 在 Cloudflare Pages 控制台核对 Repository/Branch、Framework preset、Build command 和 Output directory
+- [x] 用 Pages 等效静态服务实际访问构建产物根路径并确认显示 QRKit
+- [ ] 重新部署后验证 `/`、`/url-to-qr-code`、`/blog` 三条线上路径
