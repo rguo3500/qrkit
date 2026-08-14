@@ -97,7 +97,7 @@
 - [x] 保存 D1 接入 checkpoint（e620ad81）
 
 ## 新一轮增长与运营增强
-- [ ] 在 Google Search Console 提交 https://lovexiaoyue.dpdns.org/sitemap.xml 并完成域名验证，记录验证方式与结果
+- [ ] 在 Google Search Console 提交 https://lovexiaoyue.dpdns.org/sitemap.xml 并完成域名验证，记录验证方式与结果（资源验证已完成；已提交完整 URL，但线上 sitemap 当前仍引用旧 qrkit-5az.pages.dev，待发布 checkpoint ae7c7d25 后重新提交并确认可抓取）
 - [x] 为 Dynamic QR 管理页增加真实用户验收流程：创建、编辑目标、启停、扫码跳转、异常状态与权限边界（矩阵见 DYNAMIC_QR_UAT.md）
 - [x] 增加 Dynamic QR 访问统计图表：扫描次数、按日趋势、最近访问、设备/来源字段边界与空状态
 - [x] 增加二维码品牌样式：前景/背景色、圆角/图形样式、Logo、静区与可读性校验
@@ -142,3 +142,4 @@
 - [ ] 为 Team Workspace 增加真实认证浏览器验收：覆盖创建团队、邀请成员、共享 Dynamic QR、Remove share/取消共享，并断言成功与失败提示
 - [x] 补齐团队协作 UI 的生产级状态处理：为 teams/members/sharedLinks 查询与 invite/share/unshare/updateRole mutation 增加 loading、error、empty states，并提供成员角色修改入口
 - [ ] 完成本轮交付 checkpoint：在当前代码状态下保存新的 checkpoint，并记录本轮视觉验收范围与结果
+- [ ] 将最新 checkpoint ae7c7d25 的 QRKit 代码同步到 GitHub main，并验证远端提交与关键文件
