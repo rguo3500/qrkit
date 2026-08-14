@@ -85,7 +85,7 @@
 - [x] 确认正式站点域名并检查 Cloudflare Pages 当前自定义域名
 - [x] 配置 PUBLIC_SITE_URL 并验证 sitemap/RSS 正式 URL
 - [x] 配置 Cloudflare Pages 自定义域名（lovexiaoyue.dpdns.org）
-- [ ] 配置并验证 Cloudflare Pages 部署通知（Account → Notifications → Pages Project updates），确认通知已创建且处于 Enabled 状态
+- [x] 配置并验证 Cloudflare Pages 部署通知（Account → Notifications → Pages Project updates），确认通知已创建且处于 Enabled 状态
 - [x] 配置正式 Dynamic QR Worker 的 D1 binding
 - [x] 执行线上 Dynamic QR `/r/:id` smoke test
 - [x] 保存第五轮验证 checkpoint（e620ad81）
