@@ -30,3 +30,14 @@
 - [x] 补充更多长尾 SEO 文章与 sitemap 路由
 - [x] 完成第二轮 check、test、build 与截图验证
 - [ ] 保存第二轮完善版本 checkpoint
+
+## 第三轮逐条执行
+- [x] 创建 Cloudflare D1 schema migration 与 seed-free 管理接口类型
+- [x] 增加 Dynamic QR 管理页面边界，支持创建、启停与目标编辑的表单契约
+- [x] 抽离 PNG/SVG 导出纯函数并补充真实 Blob、文件名与下载触发测试
+- [x] 为 Blog 增加分页或渐进加载
+- [x] 增加文章详情页相关文章推荐
+- [x] 生成 RSS feed.xml 与补全 sitemap 长尾路由
+- [x] 增加基础 SEO 监测事件与文档说明
+- [x] 完成第三轮 check、test、build 与截图验证
+- [ ] 保存第三轮完善版本 checkpoint

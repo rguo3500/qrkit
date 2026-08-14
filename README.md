@@ -44,4 +44,12 @@ The homepage, generator pages, and Blog pages are lazy-loaded through route-leve
 
 To enable the D1-backed route, create a D1 database and add a `d1_databases` binding named `DB` in `wrangler.jsonc`. The local `wrangler` dev dependency is included, so `pnpm exec wrangler deploy --dry-run` validates the Worker bundle and `pnpm run deploy` builds and deploys it. The current dry-run validates the Worker and Static Assets binding without making a live deployment.
 
-The barcode engine now validates ISBN-10, ISBN-13, Code 39, EAN-13, UPC-A, and ITF-14 cases. The test suite includes 11 passing assertions across QR payloads, checksum errors, ISBN formats, Code 39 symbols, ITF-14 calculation, and sanitized download filenames.
+The barcode engine now validates ISBN-10, ISBN-13, Code 39, EAN-13, UPC-A, and ITF-14 cases. The test suite includes 13 passing assertions across QR payloads, checksum errors, ISBN formats, Code 39 symbols, ITF-14 calculation, export Blobs, safe filenames, and sanitized download filenames.
+
+## Dynamic QR management
+
+`migrations/0001_dynamic_qr.sql` provides a seed-free D1 schema for users, QR codes, dynamic links, scans, and subscriptions. The `/dynamic-qr` page is a local draft management boundary: it validates labels and HTTP(S) destinations, previews the public redirect path, and clearly indicates that persistence requires the D1 binding. This avoids implying that a static demo record has been saved.
+
+## Blog discovery and monitoring
+
+The Blog index supports category filters, search, and progressive loading. Article pages include related reading cards. `client/public/feed.xml` is exposed through an RSS alternate link in the document head, while `client/public/sitemap.xml` includes the new long-tail articles and Dynamic QR workspace. Anonymous `seo_route_view` and `code_export` events are emitted only when the existing analytics endpoint provides `window.umami`; no QR payload values are sent.

@@ -1,6 +1,7 @@
 /* QRKit Signal Paper: SEO metadata mirrors the visible editorial content and never emits FAQ schema for undisplayed questions. */
 import { useEffect } from 'react';
 import type { ToolConfig } from '../lib/tools';
+import { trackSeoRoute } from '../lib/seoAnalytics';
 
 type FaqItem = { question:string; answer:string };
 type RouteSeoProps = { title:string; description:string; path:string; type?:'website'|'article'; breadcrumbs?:{name:string;path:string}[]; tool?:ToolConfig; faq?:FaqItem[]; };
@@ -14,4 +15,4 @@ export default function RouteSeo({title,description,path,type='website',breadcru
  if(tool)graph.push({'@context':'https://schema.org','@type':'WebApplication','name':tool.name,'url':canonical,'applicationCategory':tool.kind==='qr'?'UtilitiesApplication':'BusinessApplication','operatingSystem':'Any','description':description,'offers':{'@type':'Offer','price':'0','priceCurrency':'USD'}} as never);
  if(breadcrumbs.length)graph.push({'@context':'https://schema.org','@type':'BreadcrumbList','itemListElement':breadcrumbs.map((b,i)=>({'@type':'ListItem','position':i+1,'name':b.name,'item':new URL(b.path,origin).toString()}))} as never);
  if(faq.length)graph.push({'@context':'https://schema.org','@type':'FAQPage','mainEntity':faq.map(item=>({'@type':'Question','name':item.question,'acceptedAnswer':{'@type':'Answer','text':item.answer}}))} as never);
- upsertJsonLd('route',graph); return()=>{document.title='Free QR Code & Barcode Generator | QRKit'}},[breadcrumbs,description,faq,path,title,tool,type]); return null}
+ upsertJsonLd('route',graph);trackSeoRoute(path,title); return()=>{document.title='Free QR Code & Barcode Generator | QRKit'}},[breadcrumbs,description,faq,path,title,tool,type]); return null}
