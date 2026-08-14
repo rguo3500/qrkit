@@ -4,10 +4,9 @@
   "compatibility_date": "2026-08-14",
   "main": "worker/index.ts",
   "assets": { "directory": "./dist/public", "binding": "ASSETS" },
-  // Uncomment and replace database_id after creating the D1 database:
-  // "d1_databases": [{ "binding": "DB", "database_name": "qrkit", "database_id": "<your-d1-database-id>", "migrations_dir": "d1-migrations" }]
+  "d1_databases": [{ "binding": "DB", "database_name": "qrkit", "database_id": "01546c03-e366-47d9-9523-469010237415", "migrations_dir": "d1-migrations" }]
 }
 
 // Deploy with: pnpm run build && pnpm exec wrangler deploy
-// Apply D1 migrations with: pnpm exec wrangler d1 migrations apply qrkit --remote
+// Apply D1 migrations with: pnpm exec wrangler d1 migrations apply qrkit --remote --config wrangler.worker.jsonc
 // The D1 schema lives in d1-migrations/ and is intentionally separate from the full-stack MySQL/TiDB Drizzle schema in drizzle/.

@@ -80,3 +80,17 @@
 - [x] 确保远端主分支包含 SEO generator、Pages 配置和 _redirects
 - [x] 在不直接代替用户发布的前提下，准备可审阅的同步提交与部署说明
 - [x] 重新验证 Pages 构建并检查线上 `/`、`/url-to-qr-code`、`/blog`
+
+## 第五轮逐条执行
+- [x] 确认正式站点域名并检查 Cloudflare Pages 当前自定义域名
+- [x] 配置 PUBLIC_SITE_URL 并验证 sitemap/RSS 正式 URL
+- [ ] 配置 Cloudflare Pages 自定义域名与部署通知
+- [x] 配置正式 Dynamic QR Worker 的 D1 binding
+- [ ] 执行线上 Dynamic QR `/r/:id` smoke test
+- [ ] 保存第五轮验证 checkpoint
+
+## D1 正式接入
+- [x] 将 Database ID 01546c03-e366-47d9-9523-469010237415 写入 Worker D1 binding 配置
+- [x] 执行远程 D1 migration 并验证 Dynamic QR 表结构
+- [ ] 部署 Worker 并执行 `/r/:id` 线上 smoke test
+- [ ] 保存 D1 接入 checkpoint

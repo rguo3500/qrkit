@@ -79,3 +79,9 @@ The Pages configuration was locally validated with `pnpm run validate:pages` aft
 ## Live Pages 404 diagnosis
 
 The live URL `https://qrkit-5az.pages.dev` was inspected and confirmed to serve `404 | VitePress`, including the VitePress header and default 404 copy. This is not a QRKit runtime route error; it means the Cloudflare Pages project is connected to an old VitePress build or is still using the old `npx vitepress build` command. In the Pages project settings, set the repository and branch to this QRKit repository, set the build command to `pnpm run build`, set the output directory to `dist/public`, and remove any VitePress framework preset or `npx vitepress build` override. The new `wrangler.toml` is the Pages config, and `client/public/_redirects` provides the SPA fallback for direct tool and Blog URLs. After saving those settings, trigger a new deployment and verify `/`, `/url-to-qr-code`, and `/blog` rather than relying on the old `pages.dev` deployment cache.
+
+## Production Pages Functions Dynamic QR
+
+The production Pages project binds the Cloudflare D1 database `qrkit` as `DB`, with `PUBLIC_SITE_URL` set to `https://lovexiaoyue.dpdns.org`. The route at `functions/r/[id].ts` handles `/r/:id` requests directly in Cloudflare Pages Functions: it looks up active links, records privacy-limited scan metadata, and returns a 302 redirect. The local `worker/` implementation remains available for a standalone Worker deployment, while the Pages Functions path avoids requiring a separate Wrangler OAuth deployment.
+
+The production D1 schema was applied without seed rows. Changes to Pages bindings and build variables take effect on the next deployment.
