@@ -1,0 +1,4 @@
+export type WorkerDynamicLink={id:string;qrCodeId:string;destination:string;active:boolean};
+export type WorkerScan={qrCodeId:string;country?:string;userAgent?:string;referrer?:string};
+export interface WorkerLinkRepository{get(id:string):Promise<WorkerDynamicLink|null>;recordScan(scan:WorkerScan):Promise<void>}
+export async function handleDynamicRedirect(request:Request,id:string,repository:WorkerLinkRepository){const link=await repository.get(id);if(!link||!link.active||!/^https?:\/\//i.test(link.destination))return new Response('Dynamic QR link not found',{status:404,headers:{'cache-control':'no-store'}});await repository.recordScan({qrCodeId:link.qrCodeId,country:(request as Request & {cf?:{country?:string}}).cf?.country,userAgent:request.headers.get('user-agent')?.slice(0,300),referrer:request.headers.get('referer')?.slice(0,500)});return Response.redirect(link.destination,302)}

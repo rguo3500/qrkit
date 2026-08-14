@@ -41,3 +41,18 @@
 - [x] 增加基础 SEO 监测事件与文档说明
 - [x] 完成第三轮 check、test、build 与截图验证
 - [ ] 保存第三轮完善版本 checkpoint
+
+## 第四轮逐条执行
+- [x] 配置真实 D1 migration 执行说明与正式 binding 模板
+- [x] 为 Dynamic QR 增加认证状态边界与持久化 API 契约
+- [x] 增加 Playwright 浏览器下载测试配置
+- [x] 增加 Worker 动态跳转测试 fixture 与验证脚本
+- [x] 将 RSS/sitemap 域名改为环境变量生成策略
+- [x] 增加 Search Console 验证与提交文档
+- [x] 完成第四轮 check、test、build 与浏览器验证
+- [ ] 保存第四轮完善版本 checkpoint
+
+## 第四轮修正项
+- [x] 提供真正可用的 Cloudflare D1 binding 模板与 migration/apply 流程，并明确它与当前 MySQL/TiDB Drizzle 数据库的边界
+- [x] 为 Worker 增加可执行 fixture，覆盖 active 302、inactive/missing 404 与 scan event 记录
+- [x] 重新运行 check、Vitest、Playwright、build，并记录 Worker 未部署时的测试边界

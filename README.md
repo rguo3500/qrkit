@@ -53,3 +53,17 @@ The barcode engine now validates ISBN-10, ISBN-13, Code 39, EAN-13, UPC-A, and I
 ## Blog discovery and monitoring
 
 The Blog index supports category filters, search, and progressive loading. Article pages include related reading cards. `client/public/feed.xml` is exposed through an RSS alternate link in the document head, while `client/public/sitemap.xml` includes the new long-tail articles and Dynamic QR workspace. Anonymous `seo_route_view` and `code_export` events are emitted only when the existing analytics endpoint provides `window.umami`; no QR payload values are sent.
+
+## Authenticated Dynamic QR management
+
+QRKit now uses the full-stack template’s Manus OAuth and tRPC stack for protected Dynamic QR operations. `server/routers.ts` exposes user-scoped `list`, `create`, `update`, and `remove` procedures; `server/dynamicQr.ts` enforces ownership through every query. The MySQL/TiDB Drizzle migration in `drizzle/0000_chilly_blue_marvel.sql` has been applied to the connected project database, and the `/dynamic-qr` page calls these procedures after authentication while retaining a local preview before sign-in.
+
+The Cloudflare Worker has a separate, concrete D1 path for edge-only redirect deployments. `d1-migrations/0001_dynamic_qr.sql` matches the Worker’s SQLite/D1 repository (`user_id`, `qr_code_id`, `slug`, `dynamic_link_id`), while `drizzle/` remains the source of truth for the Manus full-stack application database. Create a D1 database, uncomment the `d1_databases` binding in `wrangler.jsonc`, replace its ID, then run `pnpm exec wrangler d1 migrations apply qrkit --remote` before deploying. This separation prevents accidentally applying MySQL SQL to D1 or treating the Worker as a second source of truth for the authenticated dashboard.
+
+## Browser verification
+
+Run `pnpm test:e2e` to execute the Playwright suite. The local suite verifies that the URL QR tool downloads `url-qr-code.png` and `url-qr-code.svg`, and that the Dynamic QR workspace shows its authenticated boundary. Set `PLAYWRIGHT_WORKER_URL` to run the deployed Worker redirect smoke test; it is intentionally skipped when no deployment URL is provided. The deterministic Vitest suite also executes the Worker fixture for active 302 redirects, inactive/missing 404 responses, and privacy-limited scan recording.
+
+## Production domain and Search Console
+
+Set `PUBLIC_SITE_URL` or `VITE_SITE_URL` before `pnpm run build` to generate absolute links in `client/public/feed.xml` and `client/public/sitemap.xml`. The build runs `scripts/generate-seo.mjs` automatically. Follow `SEARCH_CONSOLE.md` after publishing to verify the domain, submit the sitemap, inspect canonical URLs, and review anonymous `seo_route_view` and `code_export` events.
