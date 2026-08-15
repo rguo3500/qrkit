@@ -163,3 +163,23 @@
 - [x] 为 Pages Functions route 增加 D1 mock 权限矩阵测试：viewer/editor/owner、跨团队拒绝、未拥有 Dynamic QR 的 NOT_FOUND 与取消共享边界
 - [ ] 为 TeamPage 增加真实认证浏览器 E2E：使用有效 PLAYWRIGHT_STORAGE_STATE 覆盖 string ID 的 create/members/invite/share/unshare/updateRole 成功与失败提示
 - [ ] 运行带有效 PLAYWRIGHT_STORAGE_STATE 的生产 Team Workspace UAT，并验证正式域名 OAuth、D1 数据和协作提示
+
+## 继续使用 Cloudflare 的 OAuth 配置路径
+- [ ] 确认 Manus OAuth 是否提供可用于外部 Cloudflare Pages 的正式 App ID、授权服务器地址、Portal 地址与回调白名单
+- [ ] 若 Manus OAuth 不提供外部部署凭据，创建或绑定一个可用于 Cloudflare Pages 的正式 OAuth 应用，并记录生产回调 URL
+- [ ] 在 Cloudflare Pages Production 配置 OAuth/JWT 所需变量并重新部署
+- [ ] 使用正式域名完成 OAuth 登录、Team Workspace 和 Dynamic QR 协作 UAT
+
+## OAuth 提供商替换决策
+- [x] 确认 Manus Auth 标签不可进入外部 OAuth 配置，且 Manus 应用密钥页面未提供可复制的 VITE_APP_ID/OAUTH_SERVER_URL
+- [x] 选择一个支持 Cloudflare Pages Functions 的外部 OAuth 提供商（选择 Google OAuth）
+- [x] 根据选定提供商创建 OAuth 应用并登记 `https://lovexiaoyue.dpdns.org/api/oauth/callback` 回调地址
+- [x] 改造 OAuth callback、登录入口、用户身份字段和测试；Cloudflare Production secrets 配置仍待完成
+- [ ] 部署后完成正式域名登录、Team Workspace 和 Dynamic QR 统计 UAT
+
+## Google OAuth 迁移
+- [x] 创建 Google Cloud OAuth Web application，并登记回调地址 `https://lovexiaoyue.dpdns.org/api/oauth/callback`（项目 QRKit Production，Web 客户端 QRKit Production Web）
+- [x] 获取并安全保存 Google Client ID/Client Secret；Client Secret 仅通过 Cloudflare Secret 保存，不在聊天中传输（用户已下载并安全保存）
+- [x] 将 Pages Functions OAuth callback 从 Manus ExchangeToken/GetUserInfo 改为 Google OAuth 2.0/OIDC，并补充 state、nonce、PKCE 或等效 CSRF 防护测试（state + nonce）
+- [ ] 配置 `GOOGLE_CLIENT_ID`、`GOOGLE_CLIENT_SECRET`、`GOOGLE_REDIRECT_URI`、`JWT_SECRET` 到 Cloudflare Pages Production；`VITE_GOOGLE_CLIENT_ID` 需作为 Pages 构建变量配置
+- [ ] 部署并验证正式域名 Google 登录、Team Workspace 创建/成员/共享与 Dynamic QR 统计 UAT
