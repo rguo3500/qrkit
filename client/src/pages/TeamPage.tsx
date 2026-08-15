@@ -3,7 +3,7 @@ import { ArrowUpRight, Share2, UserPlus, Users } from 'lucide-react';
 import { Link } from 'wouter';
 import RouteSeo from '../components/RouteSeo';
 import { startLogin } from '../const';
-import { isUnauthorizedError } from '../lib/authErrors';
+import { getErrorMessage, isUnauthorizedError } from '../lib/authErrors';
 import { trpc } from '../lib/trpc';
 
 type EditableRole = 'owner' | 'editor' | 'viewer';
@@ -26,7 +26,7 @@ export default function TeamPage() {
   const [notice, setNotice] = useState('');
   const [errorNotice, setErrorNotice] = useState('');
   const selectedTeam = useMemo(() => teams.data?.find(team => team.id === activeTeamId), [teams.data, activeTeamId]);
-  const showError = (error: { message?: string }) => { setErrorNotice(error.message || 'The request could not be completed.'); setNotice(''); };
+  const showError = (error: unknown) => { setErrorNotice(getErrorMessage(error)); setNotice(''); };
   const clearMessages = () => { setNotice(''); setErrorNotice(''); };
 
   const createTeam = trpc.team.create.useMutation({

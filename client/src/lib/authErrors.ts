@@ -8,6 +8,15 @@ type ErrorLike = {
   shape?: { data?: { code?: unknown } };
 };
 
+export const getErrorMessage = (error: unknown, fallback = "The request could not be completed.") => {
+  if (typeof error === "string" && error.trim()) return error;
+  if (error && typeof error === "object") {
+    const message = (error as ErrorLike).message;
+    if (typeof message === "string" && message.trim()) return message;
+  }
+  return fallback;
+};
+
 export const isUnauthorizedError = (error: unknown) => {
   if (!(error instanceof Error) && !(error instanceof TRPCClientError) && typeof error !== "object") return false;
   const value = error as ErrorLike;
