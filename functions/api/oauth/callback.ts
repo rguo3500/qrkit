@@ -126,10 +126,10 @@ export const onRequest = async ({ request, env }: { request: Request; env: Env }
       "set-cookie",
       `${SESSION_COOKIE}=${encodeURIComponent(session)}; Max-Age=${ONE_YEAR_SECONDS}; Path=/; HttpOnly; Secure; SameSite=Lax`,
     );
-    headers.append(
-      "set-cookie",
-      `${STATE_COOKIE}=; Max-Age=0; Path=/; Secure; SameSite=Lax`,
-    );
+    // Keep the short-lived OAuth nonce cookie untouched here. Sending a second
+    // Set-Cookie header through Pages can be normalized by an intermediary and
+    // cause the session cookie to be dropped; the nonce expires after 10 minutes
+    // and is overwritten on the next login attempt.
     return new Response(null, { status: 302, headers });
   } catch (error) {
     console.error("[Pages Google OAuth] callback failed", error);

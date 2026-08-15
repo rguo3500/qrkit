@@ -195,4 +195,5 @@
 - [x] 修复正式域名 `/teams` 生产环境仍出现 `Cannot read properties of null (reading 'message')` 的错误边界崩溃，并重新部署验证（提交 62a2ec8 已部署；正式域名已正常渲染 Team Workspace，并显示可恢复的“Please sign in again”状态，不再白屏）
 - [x] 为 Team Workspace 的未登录错误状态增加显式 Google 登录按钮，确保即使自动跳转未触发，用户仍可从页面完成 OAuth 登录（提交 698e9d5 已部署，正式域名按钮已显示并成功打开 Google 账号选择页）
 - [ ] 修复正式 Google OAuth callback 返回 `OAuth callback failed` 500：核对并补齐 Cloudflare D1 的 users/team collaboration schema，执行生产迁移后重新验证登录会话
-- [ ] 修复 OAuth state 将 callback URL 同时用作最终回跳地址的问题，新增 returnTo 字段并验证登录后回到 `/teams` 而非再次进入 callback
+- [x] 修复 OAuth state 将 callback URL 同时用作最终回跳地址的问题，新增 returnTo 字段并验证登录后回到 `/teams` 而非再次进入 callback（提交 5062016 已部署）
+- [ ] 定位并修复 Google OAuth callback 已更新 D1 用户但浏览器仍无法保持 `app_session_id` 会话的问题，完成正式登录回归
