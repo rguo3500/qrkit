@@ -29,7 +29,8 @@ describe("isUnauthorizedError", () => {
     expect(isUnauthorizedError({ message: "Request failed", shape: { data: { code: "UNAUTHORIZED" } } })).toBe(true);
   });
 
-  it("rejects unrelated errors", () => {
+  it("rejects null and unrelated errors without throwing", () => {
+    expect(isUnauthorizedError(null)).toBe(false);
     expect(isUnauthorizedError(new TRPCClientError("FORBIDDEN"))).toBe(false);
     expect(isUnauthorizedError(new Error("Something else"))).toBe(false);
   });

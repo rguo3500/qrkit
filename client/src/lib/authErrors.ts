@@ -18,7 +18,7 @@ export const getErrorMessage = (error: unknown, fallback = "The request could no
 };
 
 export const isUnauthorizedError = (error: unknown) => {
-  if (!(error instanceof Error) && !(error instanceof TRPCClientError) && typeof error !== "object") return false;
+  if (error === null || (!(error instanceof Error) && !(error instanceof TRPCClientError) && typeof error !== "object")) return false;
   const value = error as ErrorLike;
   const message = typeof value.message === "string" ? value.message : "";
   const code = value.code ?? value.data?.code ?? value.data?.data?.code ?? value.shape?.data?.code;
