@@ -14,8 +14,11 @@ export default function TeamPage() {
   const links = trpc.dynamicQr.list.useQuery();
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
   const activeTeamId = selectedTeamId ?? teams.data?.[0]?.id ?? null;
-  const members = trpc.team.members.useQuery({ teamId: activeTeamId! }, { enabled: Boolean(activeTeamId) });
-  const sharedLinks = trpc.team.sharedLinks.useQuery({ teamId: activeTeamId! }, { enabled: Boolean(activeTeamId) });
+  // Keep hook inputs schema-valid even while no team is selected; `enabled` prevents the placeholder request.
+  const disabledTeamInput = useMemo(() => ({ teamId: '__no_team_selected__' }), []);
+  const teamInput = activeTeamId ? { teamId: activeTeamId } : disabledTeamInput;
+  const members = trpc.team.members.useQuery(teamInput, { enabled: Boolean(activeTeamId) });
+  const sharedLinks = trpc.team.sharedLinks.useQuery(teamInput, { enabled: Boolean(activeTeamId) });
   const [teamName, setTeamName] = useState('');
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState<'editor' | 'viewer'>('viewer');

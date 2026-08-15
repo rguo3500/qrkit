@@ -16,3 +16,7 @@ Cloudflare Pages now shows successful Production deployment `94267e4` (`fix: red
 ## Google OAuth authorization endpoint verification
 
 Opening the Google authorization endpoint with the configured client ID and redirect URI reached Google's account chooser showing `继续前往 lovexiaoyue.dpdns.org`. This confirms the Google Client ID and `https://lovexiaoyue.dpdns.org/api/oauth/callback` redirect URI are accepted by Google. No account was selected and no authorization was submitted during this diagnostic.
+
+## OAuth single-flight deployment
+
+Cloudflare Pages Production successfully deployed commit `f4bfc02` (`fix: prevent duplicate Google OAuth nonce redirects`) at `https://1ea4183b.qrkit-5az.pages.dev`; custom domain remains `lovexiaoyue.dpdns.org`.
