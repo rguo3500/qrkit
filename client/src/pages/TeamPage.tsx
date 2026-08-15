@@ -1,7 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ArrowUpRight, Share2, UserPlus, Users } from 'lucide-react';
 import { Link } from 'wouter';
 import RouteSeo from '../components/RouteSeo';
+import { startLogin } from '../const';
+import { isUnauthorizedError } from '../lib/authErrors';
 import { trpc } from '../lib/trpc';
 
 type EditableRole = 'owner' | 'editor' | 'viewer';
@@ -46,6 +48,12 @@ export default function TeamPage() {
   });
   const isOwner = selectedTeam?.role === 'owner';
   const queryError = teams.error || members.error || sharedLinks.error;
+
+  useEffect(() => {
+    if (isUnauthorizedError(teams.error) || isUnauthorizedError(members.error) || isUnauthorizedError(sharedLinks.error)) {
+      startLogin();
+    }
+  }, [teams.error, members.error, sharedLinks.error]);
 
   return (
     <main className="container py-12 md:py-16">
