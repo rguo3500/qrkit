@@ -184,4 +184,4 @@
 - [ ] 配置 `GOOGLE_CLIENT_ID`、`GOOGLE_CLIENT_SECRET`、`GOOGLE_REDIRECT_URI`、`JWT_SECRET` 到 Cloudflare Pages Production；`VITE_GOOGLE_CLIENT_ID` 需作为 Pages 构建变量配置
 - [ ] 部署并验证正式域名 Google 登录、Team Workspace 创建/成员/共享与 Dynamic QR 统计 UAT
 
-- [x] 修复 Cloudflare Pages 未登录访问 `/teams` 时仅显示“Unable to load teams”而不自动跳转 Google OAuth 的前端错误识别，并补充未授权回归测试（13 项 Functions/客户端测试与 pnpm check、pnpm build 通过）
+- [x] 修复 Cloudflare Pages 未登录访问 `/teams` 时仅显示“Unable to load teams”而不自动跳转 Google OAuth 的前端错误识别；兼容非 TRPCClientError 的序列化错误对象，并通过 14 项客户端/Functions 测试、pnpm check、pnpm build

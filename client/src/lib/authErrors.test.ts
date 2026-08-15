@@ -12,8 +12,13 @@ describe("isUnauthorizedError", () => {
     expect(isUnauthorizedError(new TRPCClientError("Please login (10001)"))).toBe(true);
   });
 
+  it("accepts serialized Cloudflare error objects", () => {
+    expect(isUnauthorizedError({ message: "Please login (10001)", data: { code: "UNAUTHORIZED" } })).toBe(true);
+    expect(isUnauthorizedError({ message: "Request failed", shape: { data: { code: "UNAUTHORIZED" } } })).toBe(true);
+  });
+
   it("rejects unrelated errors", () => {
     expect(isUnauthorizedError(new TRPCClientError("FORBIDDEN"))).toBe(false);
-    expect(isUnauthorizedError(new Error("Please login (10001)"))).toBe(false);
+    expect(isUnauthorizedError(new Error("Something else"))).toBe(false);
   });
 });
