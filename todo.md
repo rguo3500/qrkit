@@ -197,3 +197,4 @@
 - [ ] 修复正式 Google OAuth callback 返回 `OAuth callback failed` 500：核对并补齐 Cloudflare D1 的 users/team collaboration schema，执行生产迁移后重新验证登录会话
 - [x] 修复 OAuth state 将 callback URL 同时用作最终回跳地址的问题，新增 returnTo 字段并验证登录后回到 `/teams` 而非再次进入 callback（提交 5062016 已部署）
 - [ ] 定位并修复 Google OAuth callback 已更新 D1 用户但浏览器仍无法保持 `app_session_id` 会话的问题，完成正式登录回归
+- [ ] 在 cookie 会话无法稳定持久化的情况下，实现并验证显式 OAuth 会话交换/恢复方案，确保 Team Workspace 可用

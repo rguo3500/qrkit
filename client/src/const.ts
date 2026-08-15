@@ -1,4 +1,4 @@
-import { OAUTH_STATE_COOKIE, encodeOAuthState } from "@shared/const";
+import { COOKIE_NAME, OAUTH_STATE_COOKIE, encodeOAuthState } from "@shared/const";
 
 export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 
@@ -7,7 +7,20 @@ let loginRedirectStarted = false;
 
 // Start Google OAuth from an event handler or redirect effect only. The nonce
 // is written immediately before navigation so it stays paired with `state`.
-export const startLogin = (options?: { force?: boolean }) => {
+export const restoreOAuthSession = () => {
+  if (typeof window === "undefined") return;
+  const params = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  const token = params.get("oauth_session");
+  if (!token) return;
+  try {
+    sessionStorage.setItem("manus-cookie", `${COOKIE_NAME}=${token}`);
+    window.history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
+  } catch {
+    // sessionStorage/history can be unavailable in private or embedded contexts.
+  }
+};
+
+export const startLogin = (options: { force?: boolean } = {}) => {
   if (loginRedirectStarted && !options?.force) return;
 
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;

@@ -119,9 +119,11 @@ export const onRequest = async ({ request, env }: { request: Request; env: Env }
       .sign(new TextEncoder().encode(env.JWT_SECRET));
 
     const fallback = `${url.origin}/`;
-    const headers = new Headers({
-      location: redirectLocation(parsedState.returnTo ?? fallback, fallback),
-    });
+    const destination = new URL(redirectLocation(parsedState.returnTo ?? fallback, fallback));
+    // The fragment is never sent to the server. It gives the client a reliable
+    // session handoff when a browser or intermediary drops Set-Cookie on a 302.
+    destination.hash = `oauth_session=${encodeURIComponent(session)}`;
+    const headers = new Headers({ location: destination.toString() });
     headers.append(
       "set-cookie",
       `${SESSION_COOKIE}=${encodeURIComponent(session)}; Max-Age=${ONE_YEAR_SECONDS}; Path=/; HttpOnly; Secure; SameSite=Lax`,

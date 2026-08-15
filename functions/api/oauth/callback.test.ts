@@ -42,7 +42,8 @@ describe("Google OAuth Pages callback", () => {
     const state = encodeOAuthState({ redirectUri: "https://lovexiaoyue.dpdns.org/api/oauth/callback", returnTo: "https://lovexiaoyue.dpdns.org/teams", nonce: "nonce-1" });
     const response = await onRequest({ request: requestFor(state), env: env() } as never);
     expect(response.status).toBe(302);
-    expect(response.headers.get("location")).toBe("https://lovexiaoyue.dpdns.org/teams");
+    const location = response.headers.get("location");
+    expect(location).toMatch(/^https:\/\/lovexiaoyue\.dpdns\.org\/teams#oauth_session=/);
     expect(response.headers.get("set-cookie")).toContain("app_session_id=");
     expect(response.headers.get("set-cookie")).toContain("HttpOnly");
     expect((env().DB as never)).toBeDefined();
