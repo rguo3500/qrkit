@@ -120,7 +120,7 @@ export const onRequest = async ({ request, env }: { request: Request; env: Env }
 
     const fallback = `${url.origin}/`;
     const headers = new Headers({
-      location: redirectLocation(parsedState.redirectUri, fallback),
+      location: redirectLocation(parsedState.returnTo ?? fallback, fallback),
     });
     headers.append(
       "set-cookie",

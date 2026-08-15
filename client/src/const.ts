@@ -18,9 +18,10 @@ export const startLogin = (options?: { force?: boolean }) => {
 
   loginRedirectStarted = true;
   const redirectUri = `${window.location.origin}/api/oauth/callback`;
+  const returnTo = window.location.href;
   const nonce = crypto.randomUUID();
   document.cookie = `${OAUTH_STATE_COOKIE}=${nonce}; Path=/; Max-Age=600; SameSite=Lax; Secure`;
-  const state = encodeOAuthState({ redirectUri, nonce });
+  const state = encodeOAuthState({ redirectUri, returnTo, nonce });
 
   const url = new URL(GOOGLE_AUTHORIZATION_URL);
   url.searchParams.set("client_id", clientId);

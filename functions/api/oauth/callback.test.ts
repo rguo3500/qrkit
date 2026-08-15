@@ -39,7 +39,7 @@ describe("Google OAuth Pages callback", () => {
     vi.spyOn(globalThis, "fetch")
       .mockResolvedValueOnce(new Response(JSON.stringify({ access_token: "access-1" }), { status: 200 }))
       .mockResolvedValueOnce(new Response(JSON.stringify({ sub: "sub-1", name: "QRKit Owner", email: "owner@example.com" }), { status: 200 }));
-    const state = encodeOAuthState({ redirectUri: "https://lovexiaoyue.dpdns.org/teams", nonce: "nonce-1" });
+    const state = encodeOAuthState({ redirectUri: "https://lovexiaoyue.dpdns.org/api/oauth/callback", returnTo: "https://lovexiaoyue.dpdns.org/teams", nonce: "nonce-1" });
     const response = await onRequest({ request: requestFor(state), env: env() } as never);
     expect(response.status).toBe(302);
     expect(response.headers.get("location")).toBe("https://lovexiaoyue.dpdns.org/teams");

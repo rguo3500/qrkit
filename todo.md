@@ -193,4 +193,6 @@
 - [x] 在 App 路由外层接入可见 ErrorBoundary，确保 TeamPage 运行时异常显示可恢复错误提示而不是空白页；修复重复 cn 导入，并通过全量 52 项测试、pnpm check、pnpm build
 - [x] 清理同步 ZIP 中误提交的 `.wrangler/state` 本地缓存与 `test-results` 生成物，补充忽略规则并同步干净提交到 GitHub main（干净提交 af732a8 已强制同步）
 - [x] 修复正式域名 `/teams` 生产环境仍出现 `Cannot read properties of null (reading 'message')` 的错误边界崩溃，并重新部署验证（提交 62a2ec8 已部署；正式域名已正常渲染 Team Workspace，并显示可恢复的“Please sign in again”状态，不再白屏）
-- [ ] 为 Team Workspace 的未登录错误状态增加显式 Google 登录按钮，确保即使自动跳转未触发，用户仍可从页面完成 OAuth 登录
+- [x] 为 Team Workspace 的未登录错误状态增加显式 Google 登录按钮，确保即使自动跳转未触发，用户仍可从页面完成 OAuth 登录（提交 698e9d5 已部署，正式域名按钮已显示并成功打开 Google 账号选择页）
+- [ ] 修复正式 Google OAuth callback 返回 `OAuth callback failed` 500：核对并补齐 Cloudflare D1 的 users/team collaboration schema，执行生产迁移后重新验证登录会话
+- [ ] 修复 OAuth state 将 callback URL 同时用作最终回跳地址的问题，新增 returnTo 字段并验证登录后回到 `/teams` 而非再次进入 callback
