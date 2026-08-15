@@ -193,3 +193,4 @@
 - [x] 在 App 路由外层接入可见 ErrorBoundary，确保 TeamPage 运行时异常显示可恢复错误提示而不是空白页；修复重复 cn 导入，并通过全量 52 项测试、pnpm check、pnpm build
 - [x] 清理同步 ZIP 中误提交的 `.wrangler/state` 本地缓存与 `test-results` 生成物，补充忽略规则并同步干净提交到 GitHub main（干净提交 af732a8 已强制同步）
 - [x] 修复正式域名 `/teams` 生产环境仍出现 `Cannot read properties of null (reading 'message')` 的错误边界崩溃，并重新部署验证（提交 62a2ec8 已部署；正式域名已正常渲染 Team Workspace，并显示可恢复的“Please sign in again”状态，不再白屏）
+- [ ] 为 Team Workspace 的未登录错误状态增加显式 Google 登录按钮，确保即使自动跳转未触发，用户仍可从页面完成 OAuth 登录

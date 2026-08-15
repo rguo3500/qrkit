@@ -7,8 +7,8 @@ let loginRedirectStarted = false;
 
 // Start Google OAuth from an event handler or redirect effect only. The nonce
 // is written immediately before navigation so it stays paired with `state`.
-export const startLogin = () => {
-  if (loginRedirectStarted) return;
+export const startLogin = (options?: { force?: boolean }) => {
+  if (loginRedirectStarted && !options?.force) return;
 
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   if (!clientId) {
