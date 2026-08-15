@@ -183,3 +183,5 @@
 - [x] 将 Pages Functions OAuth callback 从 Manus ExchangeToken/GetUserInfo 改为 Google OAuth 2.0/OIDC，并补充 state、nonce、PKCE 或等效 CSRF 防护测试（state + nonce）
 - [ ] 配置 `GOOGLE_CLIENT_ID`、`GOOGLE_CLIENT_SECRET`、`GOOGLE_REDIRECT_URI`、`JWT_SECRET` 到 Cloudflare Pages Production；`VITE_GOOGLE_CLIENT_ID` 需作为 Pages 构建变量配置
 - [ ] 部署并验证正式域名 Google 登录、Team Workspace 创建/成员/共享与 Dynamic QR 统计 UAT
+
+- [x] 修复 Cloudflare Pages 未登录访问 `/teams` 时仅显示“Unable to load teams”而不自动跳转 Google OAuth 的前端错误识别，并补充未授权回归测试（13 项 Functions/客户端测试与 pnpm check、pnpm build 通过）
