@@ -1,6 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 
-const siteUrl = (process.env.PUBLIC_SITE_URL || process.env.VITE_SITE_URL || "https://qrkit.example").replace(/\/$/, "");
+const siteUrl = (process.env.PUBLIC_SITE_URL || process.env.VITE_SITE_URL || "https://lovexiaoyue.dpdns.org").replace(/\/$/, "");
 const sourceOrigins = ["https://qrkit.example", "https://qrkit-5az.pages.dev", "https://lovexiaoyue.dpdns.org"];
 
 for (const file of ["client/public/feed.xml", "client/public/sitemap.xml"]) {

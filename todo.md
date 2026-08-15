@@ -145,5 +145,6 @@
 - [x] 将最新 checkpoint ae7c7d25 的 QRKit 代码同步到 GitHub main，并验证远端提交与关键文件（用户已通过管理界面完成 GitHub 导出）
 - [x] 通过 GitHub 集成或仓库链接核对 GitHub main：确认最新提交包含 ae7c7d25 对应变更，并检查 TeamPage.tsx、server/team.integration.test.ts、README.md、todo.md 已同步（GitHub main 已验证为 de851c8）
 - [x] 修复 Cloudflare Pages 对 wrangler.toml 的校验错误：补充顶层 name 字段，并重新验证 Pages 配置、构建和正式域名 sitemap（本地配置与 production build 已通过）
-- [ ] 基于包含 wrangler.toml 顶层 name 的最新提交重新部署 Cloudflare Pages，并确认构建日志通过
-- [ ] 部署后复核 https://lovexiaoyue.dpdns.org/sitemap.xml，确认内容可访问且链接全部指向正式域名
+- [x] 基于包含 wrangler.toml 顶层 name 的最新提交重新部署 Cloudflare Pages，并确认构建日志通过（bc04740 部署 success）
+- [x] 部署后复核 https://lovexiaoyue.dpdns.org/sitemap.xml，确认内容可访问且链接全部指向正式域名
+- [x] 修正 scripts/generate-seo.mjs 的生产回退域名：当 Cloudflare 未注入 PUBLIC_SITE_URL 时默认使用 https://lovexiaoyue.dpdns.org，避免正式 sitemap 生成 qrkit.example（已同步到 GitHub 83a3e58）
