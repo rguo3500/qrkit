@@ -4,3 +4,9 @@
 name = "qrkit"
 pages_build_output_dir = "dist/public"
 compatibility_date = "2026-08-14"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "qrkit"
+database_id = "01546c03-e366-47d9-9523-469010237415"
+migrations_dir = "d1-migrations"

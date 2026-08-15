@@ -21,9 +21,9 @@ export default function DynamicQrPage() {
   const { user, isAuthenticated, loading } = useAuth();
   const utils = trpc.useUtils();
   const links = trpc.dynamicQr.list.useQuery(undefined, { enabled: isAuthenticated });
-  const [selectedLinkId, setSelectedLinkId] = useState<number>();
+  const [selectedLinkId, setSelectedLinkId] = useState<string>();
   const statsInput = useMemo(() => (selectedLinkId ? { id: selectedLinkId } : undefined), [selectedLinkId]);
-  const stats = trpc.dynamicQr.stats.useQuery(statsInput as { id: number }, { enabled: Boolean(statsInput) });
+  const stats = trpc.dynamicQr.stats.useQuery(statsInput as { id: string }, { enabled: Boolean(statsInput) });
   const create = trpc.dynamicQr.create.useMutation({
     onSuccess: (record) => {
       utils.dynamicQr.list.invalidate();

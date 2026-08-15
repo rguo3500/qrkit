@@ -148,3 +148,18 @@
 - [x] 基于包含 wrangler.toml 顶层 name 的最新提交重新部署 Cloudflare Pages，并确认构建日志通过（bc04740 部署 success）
 - [x] 部署后复核 https://lovexiaoyue.dpdns.org/sitemap.xml，确认内容可访问且链接全部指向正式域名
 - [x] 修正 scripts/generate-seo.mjs 的生产回退域名：当 Cloudflare 未注入 PUBLIC_SITE_URL 时默认使用 https://lovexiaoyue.dpdns.org，避免正式 sitemap 生成 qrkit.example（已同步到 GitHub 83a3e58）
+- [x] 修复 Team Workspace 创建团队时 API 返回空响应导致的 Unexpected end of JSON input，并补充成功/失败响应测试
+- [ ] 设计并实施团队协作后端迁移到 Cloudflare Pages Functions + D1：保留现有 Dynamic QR Worker 能力，迁移 teams/team_members/dynamic_link_shares 数据契约，并完成 OAuth/会话边界、API、前端与生产验收
+- [x] 新增非破坏性 D1 migration：users、teams、team_members、dynamic_link_shares，并为现有 dynamic_links/scan_events 增加必要索引与兼容说明（本地 Wrangler migration 已成功应用）
+- [x] 新增 Pages Functions API 骨架：统一 JSON 错误响应、D1 repository、Dynamic QR 与团队 CRUD/共享接口（含 tRPC batch 响应）
+- [x] 迁移 Manus OAuth callback、JWT session cookie 和受保护请求身份解析到 Pages Functions，并配置必需 Cloudflare secrets（生产 secrets 配置仍待 Cloudflare 控制台完成）
+- [x] 改造前端 API transport/Team Workspace，使其使用 Pages Functions 的 D1 字符串 ID 契约并保留 loading/error 状态（继续使用 `/api/trpc`，TeamPage 已兼容字符串 ID）
+- [x] 为迁移后的 Functions API 增加 D1 权限边界、跨团队拒绝、viewer/editor/owner 和取消共享测试
+- [x] 将 Team Workspace 及相关 API 输入输出契约从 number 正式迁移为 string，移除 `as unknown as number` 强制转换
+- [ ] 为 Pages Functions + TeamPage 增加真实字符串 ID 端到端测试，覆盖 create/members/invite/share/unshare/updateRole 成功与失败路径（真实 TeamPage 浏览器路径仍待有效认证状态）
+
+## Cloudflare Functions 迁移后的剩余人工验收
+- [ ] 在 Cloudflare Pages 生产环境手动配置内置 OAuth secrets：JWT_SECRET、VITE_APP_ID、OAUTH_SERVER_URL（当前会话不能直接编辑这些内置变量）
+- [x] 为 Pages Functions route 增加 D1 mock 权限矩阵测试：viewer/editor/owner、跨团队拒绝、未拥有 Dynamic QR 的 NOT_FOUND 与取消共享边界
+- [ ] 为 TeamPage 增加真实认证浏览器 E2E：使用有效 PLAYWRIGHT_STORAGE_STATE 覆盖 string ID 的 create/members/invite/share/unshare/updateRole 成功与失败提示
+- [ ] 运行带有效 PLAYWRIGHT_STORAGE_STATE 的生产 Team Workspace UAT，并验证正式域名 OAuth、D1 数据和协作提示
