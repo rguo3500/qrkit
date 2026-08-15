@@ -185,3 +185,5 @@
 - [ ] 部署并验证正式域名 Google 登录、Team Workspace 创建/成员/共享与 Dynamic QR 统计 UAT
 
 - [x] 修复 Cloudflare Pages 未登录访问 `/teams` 时仅显示“Unable to load teams”而不自动跳转 Google OAuth；兼容序列化错误对象，并在 TeamPage 页面层增加直接监听，23 项定向测试、pnpm check、pnpm build 通过
+
+- [x] 防止全局 QueryCache 与 TeamPage 页面层重复触发 Google OAuth，避免第二次 startLogin 覆盖 nonce 导致 callback invalid oauth state（startLogin 单次跳转保护；全量 52 项测试、pnpm check、pnpm build 通过）
