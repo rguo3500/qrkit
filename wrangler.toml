@@ -1,5 +1,6 @@
 # Cloudflare Pages configuration for the static QRKit site.
 # Pages dashboard build command: pnpm run build
 # Pages dashboard output directory: dist/public
+name = "qrkit"
 pages_build_output_dir = "dist/public"
 compatibility_date = "2026-08-14"

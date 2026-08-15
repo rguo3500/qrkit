@@ -141,5 +141,9 @@
 - [x] 补充跨团队 shareDynamicLink 与 unshareDynamicLink 集成测试，验证 teamId 不匹配或不属于团队时返回 FORBIDDEN/NOT_FOUND
 - [ ] 为 Team Workspace 增加真实认证浏览器验收：覆盖创建团队、邀请成员、共享 Dynamic QR、Remove share/取消共享，并断言成功与失败提示
 - [x] 补齐团队协作 UI 的生产级状态处理：为 teams/members/sharedLinks 查询与 invite/share/unshare/updateRole mutation 增加 loading、error、empty states，并提供成员角色修改入口
-- [ ] 完成本轮交付 checkpoint：在当前代码状态下保存新的 checkpoint，并记录本轮视觉验收范围与结果
-- [ ] 将最新 checkpoint ae7c7d25 的 QRKit 代码同步到 GitHub main，并验证远端提交与关键文件
+- [x] 完成本轮交付 checkpoint：在当前代码状态下保存新的 checkpoint，并记录本轮视觉验收范围与结果
+- [x] 将最新 checkpoint ae7c7d25 的 QRKit 代码同步到 GitHub main，并验证远端提交与关键文件（用户已通过管理界面完成 GitHub 导出）
+- [x] 通过 GitHub 集成或仓库链接核对 GitHub main：确认最新提交包含 ae7c7d25 对应变更，并检查 TeamPage.tsx、server/team.integration.test.ts、README.md、todo.md 已同步（GitHub main 已验证为 de851c8）
+- [x] 修复 Cloudflare Pages 对 wrangler.toml 的校验错误：补充顶层 name 字段，并重新验证 Pages 配置、构建和正式域名 sitemap（本地配置与 production build 已通过）
+- [ ] 基于包含 wrangler.toml 顶层 name 的最新提交重新部署 Cloudflare Pages，并确认构建日志通过
+- [ ] 部署后复核 https://lovexiaoyue.dpdns.org/sitemap.xml，确认内容可访问且链接全部指向正式域名
