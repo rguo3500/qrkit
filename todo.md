@@ -189,3 +189,5 @@
 - [x] 防止全局 QueryCache 与 TeamPage 页面层重复触发 Google OAuth，避免第二次 startLogin 覆盖 nonce 导致 callback invalid oauth state（startLogin 单次跳转保护；全量 52 项测试、pnpm check、pnpm build 通过）
 
 - [x] 定位并修复正式域名 `/teams?v=f4bfc02` 在真实 Chrome 中出现空白页的生产运行时故障：TeamPage 初始渲染不再向 tRPC hook 传递 null teamId，输入始终 schema-valid；全量 52 项测试、pnpm check、pnpm build 通过
+
+- [x] 在 App 路由外层接入可见 ErrorBoundary，确保 TeamPage 运行时异常显示可恢复错误提示而不是空白页；修复重复 cn 导入，并通过全量 52 项测试、pnpm check、pnpm build
