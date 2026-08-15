@@ -191,4 +191,4 @@
 - [x] 定位并修复正式域名 `/teams?v=f4bfc02` 在真实 Chrome 中出现空白页的生产运行时故障：TeamPage 初始渲染不再向 tRPC hook 传递 null teamId，输入始终 schema-valid；全量 52 项测试、pnpm check、pnpm build 通过
 
 - [x] 在 App 路由外层接入可见 ErrorBoundary，确保 TeamPage 运行时异常显示可恢复错误提示而不是空白页；修复重复 cn 导入，并通过全量 52 项测试、pnpm check、pnpm build
-- [ ] 清理同步 ZIP 中误提交的 `.wrangler/state` 本地缓存与 `test-results` 生成物，补充忽略规则并同步干净提交到 GitHub main
+- [x] 清理同步 ZIP 中误提交的 `.wrangler/state` 本地缓存与 `test-results` 生成物，补充忽略规则并同步干净提交到 GitHub main（干净提交 af732a8 已强制同步）
