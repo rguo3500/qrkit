@@ -99,6 +99,23 @@ describe('Pages tRPC Functions route', () => {
     expect(await invalidRole.json()).toEqual([{ error: { json: { message: 'Invalid role.', data: { code: 'BAD_REQUEST', httpStatus: 400 } } } }]);
   });
 
+  it('activates a pending invitation for the matching authenticated email', async () => {
+    const token = await new SignJWT({ openId: 'open-1', name: 'Invitee' }).setProtectedHeader({ alg: 'HS256' }).setExpirationTime('1h').sign(new TextEncoder().encode('test-secret'));
+    const prepare = vi.fn((sql: string) => ({
+      bind: vi.fn(() => ({
+        first: vi.fn(async () => sql.includes('FROM users WHERE open_id') ? { id: 'user-1', openId: 'open-1', name: 'Invitee', email: 'invitee@example.com', role: 'user' } : sql.includes("status = 'pending'") ? { id: 'pending-1', role: 'viewer' } : null),
+        run: vi.fn(async () => ({ meta: { changes: 1 } })),
+      })),
+    }));
+    const response = await onRequest({
+      request: new Request('https://lovexiaoyue.dpdns.org/api/trpc/team.acceptInvite', { method: 'POST', headers: { cookie: `app_session_id=${token}`, 'content-type': 'application/json' }, body: JSON.stringify({ 0: { json: { teamId: 'team-1' } } }) }),
+      env: { DB: { prepare }, JWT_SECRET: 'test-secret' },
+      params: { trpc: 'team.acceptInvite' },
+    } as never);
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual([{ result: { data: { json: { teamId: 'team-1', role: 'viewer', status: 'active' } } } }]);
+  });
+
   it('uses a D1 batch response shape for an authenticated team create', async () => {
     const prepare = vi.fn((sql: string) => ({ bind: vi.fn(() => ({ run: vi.fn().mockResolvedValue({ meta: { changes: 1 } }) })) }));
     const db = { prepare, batch: vi.fn().mockResolvedValue([{ meta: { changes: 1 } }, { meta: { changes: 1 } }]) };

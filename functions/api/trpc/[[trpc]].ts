@@ -111,7 +111,7 @@ async function handle(procedure: string, input: any, request: Request, env: Env)
   if (procedure === 'team.create') text(payload.name, 'name', 160);
   if (procedure === 'team.invite') { idText(payload.teamId, 'teamId'); email(payload.email); role(payload.role); }
   if (procedure === 'team.updateRole') { idText(payload.teamId, 'teamId'); idText(payload.memberId, 'memberId'); role(payload.role); }
-  if (procedure === 'team.members' || procedure === 'team.sharedLinks') idText(payload.teamId, 'teamId');
+  if (procedure === 'team.members' || procedure === 'team.sharedLinks' || procedure === 'team.acceptInvite') idText(payload.teamId, 'teamId');
   if (procedure === 'team.shareLink' || procedure === 'team.unshareLink') { idText(payload.teamId, 'teamId'); idText(payload.dynamicLinkId, 'dynamicLinkId'); }
   if (procedure === 'dynamicQr.list') return env.DB.prepare('SELECT id, slug, label, destination, active, created_at AS createdAt, updated_at AS updatedAt FROM dynamic_links WHERE user_id = ?1 ORDER BY created_at DESC').bind(user.id).all().then(result => result.results);
   if (procedure === 'dynamicQr.stats') {
@@ -148,6 +148,13 @@ async function handle(procedure: string, input: any, request: Request, env: Env)
   if (procedure === 'dynamicQr.remove') {
     await env.DB.prepare('DELETE FROM dynamic_links WHERE id = ?1 AND user_id = ?2').bind(String(payload.id), user.id).run();
     return { success: true };
+  }
+  if (procedure === 'team.acceptInvite') {
+    if (!user.email) throw Object.assign(new Error('A verified email is required to accept an invitation.'), { code: 'BAD_REQUEST', status: 400 });
+    const pending = await env.DB.prepare("SELECT id, role FROM team_members WHERE team_id = ?1 AND lower(email) = lower(?2) AND status = 'pending' LIMIT 1").bind(String(payload.teamId), user.email).first<{ id: string; role: TeamRole }>();
+    if (!pending) throw Object.assign(new Error('No pending invitation found for this account.'), { code: 'NOT_FOUND', status: 404 });
+    await env.DB.prepare("UPDATE team_members SET user_id = ?1, status = 'active', updated_at = ?2 WHERE id = ?3 AND status = 'pending'").bind(user.id, now(), pending.id).run();
+    return { teamId: String(payload.teamId), role: pending.role, status: 'active' };
   }
   if (procedure === 'team.list') return env.DB.prepare('SELECT t.id, t.name, tm.role, tm.status, t.created_at AS createdAt FROM team_members tm INNER JOIN teams t ON t.id = tm.team_id WHERE tm.user_id = ?1 AND tm.status = \'active\' ORDER BY t.created_at DESC').bind(user.id).all().then(result => result.results);
   if (procedure === 'team.create') {
