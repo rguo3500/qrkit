@@ -7,7 +7,8 @@ type User = { id: string; openId: string; name: string; email: string | null; ro
 const COOKIE_NAME = 'app_session_id';
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json; charset=utf-8' } });
 const ok = (data: unknown) => json([{ result: { data: { json: data } } }]);
-const fail = (message: string, code = 'BAD_REQUEST', status = 400) => json([{ error: { json: { message, data: { code, httpStatus: status } } } }], status);
+const rpcCode = (code: string, status: number) => code === 'NOT_FOUND' ? -32601 : code === 'UNAUTHORIZED' ? -32001 : status >= 500 ? -32603 : -32600;
+const fail = (message: string, code = 'BAD_REQUEST', status = 400) => json([{ error: { message, code: rpcCode(code, status), data: { code, httpStatus: status } } }], status);
 const now = () => new Date().toISOString();
 const id = () => crypto.randomUUID();
 
