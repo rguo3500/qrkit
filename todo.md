@@ -210,3 +210,5 @@
 - [x] 为 Pages Functions 增加服务端输入校验：验证 Dynamic QR HTTP(S) destination、长度、active、团队 role、邮箱和 string ID；新增非法 role/URL 回归测试，10 项定向测试与 pnpm check 通过，完整 build/部署回归仍待执行
 
 - [x] 修复 Dynamic QR 更新错误的根因：Pages Functions 错误体缺少 tRPC 11 要求的 numeric JSON-RPC code，导致客户端显示 `Unable to transform response from server`；已补充 route 回归断言，15 个 Vitest 文件/50 项断言、pnpm check、pnpm build 通过；正式域名需重新部署后点击验证
+
+- [ ] 生产回归仍失败：正式域名继续显示 `Unable to transform response from server`；核对 Cloudflare Pages 当前部署是否包含 numeric tRPC error code 修复，并抓取真实 API 响应后完成兼容性修复

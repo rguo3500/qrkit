@@ -13,3 +13,7 @@ The formal-domain `/dynamic-qr` route loaded successfully and displayed the Dyna
 ## Evidence limits
 
 These passive page observations prove that the public site and Dynamic QR route render. They do not prove that Google OAuth completed, that Cloudflare Production secrets are configured, that a real Dynamic QR was created in D1, or that authenticated scan statistics were verified. Those items remain in `todo.md` and `PRODUCTION_VERIFICATION.md` until the user performs and records the corresponding authenticated actions.
+
+## Post-fix observation
+
+After checkpoint `1b057c15` was published, the formal `/dynamic-qr` route still rendered successfully, but the passive extraction showed `Draft mode / sign in to persist this link` rather than an authenticated state. The page therefore confirms route availability only; it does not confirm that the signed-in browser used for the screenshot received the new bundle or that the Update mutation succeeded. A fresh authenticated click is still required.

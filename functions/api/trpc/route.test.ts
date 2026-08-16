@@ -17,12 +17,14 @@ describe('Pages tRPC Functions route', () => {
   it('returns a valid tRPC JSON response for public auth.me without a session', async () => {
     const response = await onRequest(context('https://lovexiaoyue.dpdns.org/api/trpc/auth.me', { DB: {} }) as never);
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual([{ result: { data: { json: null } } }]);
+    expect(response.headers.get('x-qrkit-trpc')).toBe('numeric-error-v2');
+    expect(await response.json()).toEqual([{ result: { type: 'data', data: { json: null } } }]);
   });
 
   it('returns a structured unauthorized response for protected procedures', async () => {
     const response = await onRequest(context('https://lovexiaoyue.dpdns.org/api/trpc/dynamicQr.list', { DB: {} }) as never);
     expect(response.status).toBe(401);
+    expect(response.headers.get('x-qrkit-trpc')).toBe('numeric-error-v2');
     const body = await response.json() as Array<{ error?: { message?: string; code?: number; data?: { code?: string } } }>;
     expect(body[0]?.error?.message).toBe('Please login (10001)');
     expect(body[0]?.error?.code).toBe(-32001);

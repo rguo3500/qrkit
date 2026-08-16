@@ -5,10 +5,11 @@ type Env = { DB: D1Database; JWT_SECRET?: string; VITE_APP_ID?: string };
 type User = { id: string; openId: string; name: string; email: string | null; role: string };
 
 const COOKIE_NAME = 'app_session_id';
-const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json; charset=utf-8' } });
-const ok = (data: unknown) => json([{ result: { data: { json: data } } }]);
+const responseHeaders = { 'content-type': 'application/json; charset=utf-8', 'x-qrkit-trpc': 'numeric-error-v2' };
+const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: responseHeaders });
+const ok = (data: unknown) => json([{ result: { type: 'data', data: { json: data } } }]);
 const rpcCode = (code: string, status: number) => code === 'NOT_FOUND' ? -32601 : code === 'UNAUTHORIZED' ? -32001 : status >= 500 ? -32603 : -32600;
-const fail = (message: string, code = 'BAD_REQUEST', status = 400) => json([{ error: { message, code: rpcCode(code, status), data: { code, httpStatus: status } } }], status);
+const fail = (message: string, code = 'BAD_REQUEST', status = 400, path?: string) => json([{ error: { message, code: rpcCode(code, status), data: { code, httpStatus: status, ...(path ? { path } : {}) } } }], status);
 const now = () => new Date().toISOString();
 const id = () => crypto.randomUUID();
 
@@ -140,6 +141,6 @@ export const onRequest = async ({ request, env, params }: { request: Request; en
     return ok(await handle(procedure, input, request, env));
   } catch (error) {
     const value = error as { message?: string; code?: string; status?: number };
-    return fail(value.message ?? 'Request failed', value.code ?? 'INTERNAL_SERVER_ERROR', value.status ?? 500);
+    return fail(value.message ?? 'Request failed', value.code ?? 'INTERNAL_SERVER_ERROR', value.status ?? 500, procedure);
   }
 };
