@@ -211,4 +211,6 @@
 
 - [x] 修复 Dynamic QR 更新错误的根因：Pages Functions 错误体缺少 tRPC 11 要求的 numeric JSON-RPC code，导致客户端显示 `Unable to transform response from server`；已补充 route 回归断言，15 个 Vitest 文件/50 项断言、pnpm check、pnpm build 通过；正式域名需重新部署后点击验证
 
-- [ ] 生产回归仍失败：正式域名继续显示 `Unable to transform response from server`；核对 Cloudflare Pages 当前部署是否包含 numeric tRPC error code 修复，并抓取真实 API 响应后完成兼容性修复
+- [ ] 生产回归待完成：Cloudflare Pages 已从旧版 f842a15 切换到 GitHub 392a34a，正式页面已不再显示 Team 导航；仍需在真实 Google 登录会话中点击保存，并确认 `dynamicQr.update` 返回不再出现 `Unable to transform response from server` 且响应头包含 `x-qrkit-trpc: numeric-error-v2`
+
+- [x] 修复并验证正式域名首页 `Failed to fetch dynamically imported module`：Cloudflare 已部署 392a34a；当前 HTML 与 Home chunk 均可访问，干净浏览器下首页和 Dynamic QR 完整加载；根因是部署切换期间旧浏览器缓存了旧 index/chunk 组合
