@@ -85,6 +85,20 @@ describe('Pages tRPC Functions route', () => {
     }
   });
 
+  it('rejects invalid role and non-http Dynamic QR destinations before database writes', async () => {
+    const token = await new SignJWT({ openId: 'open-1', name: 'Owner' }).setProtectedHeader({ alg: 'HS256' }).setExpirationTime('1h').sign(new TextEncoder().encode('test-secret'));
+    const call = async (procedure: string, input: unknown) => onRequest({
+      request: new Request(`https://lovexiaoyue.dpdns.org/api/trpc/${procedure}`, { method: 'POST', headers: { cookie: `app_session_id=${token}`, 'content-type': 'application/json' }, body: JSON.stringify({ 0: { json: input } }) }),
+      env: { DB: { prepare: vi.fn((sql: string) => ({ bind: vi.fn(() => ({ first: vi.fn(async () => sql.includes('FROM users WHERE open_id') ? { id: 'user-1', openId: 'open-1', name: 'Owner', email: 'owner@example.com', role: 'user' } : null), run: vi.fn(async () => ({ meta: { changes: 1 } })) })) })), batch: vi.fn() }, JWT_SECRET: 'test-secret' },
+      params: { trpc: procedure },
+    } as never);
+    const invalidRole = await call('team.invite', { teamId: 'team-1', email: 'editor@example.com', role: 'admin' });
+    const invalidUrl = await call('dynamicQr.create', { slug: 'bad', label: 'Bad', destination: 'javascript:alert(1)' });
+    expect(invalidRole.status).toBe(400);
+    expect(invalidUrl.status).toBe(400);
+    expect(await invalidRole.json()).toEqual([{ error: { json: { message: 'Invalid role.', data: { code: 'BAD_REQUEST', httpStatus: 400 } } } }]);
+  });
+
   it('uses a D1 batch response shape for an authenticated team create', async () => {
     const prepare = vi.fn((sql: string) => ({ bind: vi.fn(() => ({ run: vi.fn().mockResolvedValue({ meta: { changes: 1 } }) })) }));
     const db = { prepare, batch: vi.fn().mockResolvedValue([{ meta: { changes: 1 } }, { meta: { changes: 1 } }]) };
