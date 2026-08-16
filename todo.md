@@ -214,3 +214,5 @@
 - [ ] 生产回归待完成：Cloudflare Pages 已从旧版 f842a15 切换到 GitHub 392a34a，正式页面已不再显示 Team 导航；仍需在真实 Google 登录会话中点击保存，并确认 `dynamicQr.update` 返回不再出现 `Unable to transform response from server` 且响应头包含 `x-qrkit-trpc: numeric-error-v2`
 
 - [x] 修复并验证正式域名首页 `Failed to fetch dynamically imported module`：Cloudflare 已部署 392a34a；当前 HTML 与 Home chunk 均可访问，干净浏览器下首页和 Dynamic QR 完整加载；根因是部署切换期间旧浏览器缓存了旧 index/chunk 组合
+
+- [ ] 已登录生产回归仍失败：Dynamic QR 保存按钮继续显示 `Unable to transform response from server`；抓取线上 `dynamicQr.update` 响应体/响应头，修复真实生产 Functions 契约并完成保存验证

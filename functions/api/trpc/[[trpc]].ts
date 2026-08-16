@@ -9,7 +9,7 @@ const responseHeaders = { 'content-type': 'application/json; charset=utf-8', 'x-
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: responseHeaders });
 const ok = (data: unknown) => json([{ result: { type: 'data', data: { json: data } } }]);
 const rpcCode = (code: string, status: number) => code === 'NOT_FOUND' ? -32601 : code === 'UNAUTHORIZED' ? -32001 : status >= 500 ? -32603 : -32600;
-const fail = (message: string, code = 'BAD_REQUEST', status = 400, path?: string) => json([{ error: { message, code: rpcCode(code, status), data: { code, httpStatus: status, ...(path ? { path } : {}) } } }], status);
+const fail = (message: string, code = 'BAD_REQUEST', status = 400, path?: string) => json([{ error: { json: { message, code: rpcCode(code, status), data: { code, httpStatus: status, ...(path ? { path } : {}) } } } }], status);
 const now = () => new Date().toISOString();
 const id = () => crypto.randomUUID();
 

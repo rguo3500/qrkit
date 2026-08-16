@@ -25,16 +25,16 @@ describe('Pages tRPC Functions route', () => {
     const response = await onRequest(context('https://lovexiaoyue.dpdns.org/api/trpc/dynamicQr.list', { DB: {} }) as never);
     expect(response.status).toBe(401);
     expect(response.headers.get('x-qrkit-trpc')).toBe('numeric-error-v2');
-    const body = await response.json() as Array<{ error?: { message?: string; code?: number; data?: { code?: string } } }>;
-    expect(body[0]?.error?.message).toBe('Please login (10001)');
-    expect(body[0]?.error?.code).toBe(-32001);
-    expect(body[0]?.error?.data?.code).toBe('UNAUTHORIZED');
+    const body = await response.json() as Array<{ error?: { json?: { message?: string; code?: number; data?: { code?: string } } } }>;
+    expect(body[0]?.error?.json?.message).toBe('Please login (10001)');
+    expect(body[0]?.error?.json?.code).toBe(-32001);
+    expect(body[0]?.error?.json?.data?.code).toBe('UNAUTHORIZED');
   });
 
   it('does not expose removed Team Workspace procedures', async () => {
     const response = await onRequest(context('https://lovexiaoyue.dpdns.org/api/trpc/team.list', { DB: {} }) as never);
     expect(response.status).toBe(401);
-    expect((await response.json())[0]?.error?.data?.code).toBe('UNAUTHORIZED');
+    expect((await response.json())[0]?.error?.json?.data?.code).toBe('UNAUTHORIZED');
   });
 
   it('rejects non-http Dynamic QR destinations before database writes', async () => {
@@ -51,7 +51,7 @@ describe('Pages tRPC Functions route', () => {
       params: { trpc: 'dynamicQr.create' },
     } as never);
     expect(response.status).toBe(400);
-    expect((await response.json())[0]?.error?.message).toBe('Invalid destination.');
+    expect((await response.json())[0]?.error?.json?.message).toBe('Invalid destination.');
     expect(prepare).toHaveBeenCalledTimes(2);
   });
 });
