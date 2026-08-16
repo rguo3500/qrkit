@@ -70,8 +70,18 @@ async function handle(procedure: string, input: any, request: Request, env: Env)
   if (procedure === 'dynamicQr.stats') {
     const link = await env.DB.prepare('SELECT id FROM dynamic_links WHERE id = ?1 AND user_id = ?2 LIMIT 1').bind(String(input?.id), user.id).first();
     if (!link) throw Object.assign(new Error('Dynamic QR link not found.'), { code: 'NOT_FOUND', status: 404 });
-    const rows = await env.DB.prepare('SELECT created_at AS createdAt, user_agent AS userAgent, referrer FROM scan_events WHERE dynamic_link_id = ?1 ORDER BY created_at DESC LIMIT 200').bind(String(input.id)).all();
-    return { totalScans: rows.results.length, trend: [], recentVisits: rows.results };
+    const dynamicLinkId = String(input.id);
+    const [summary, dailyRows, recentRows] = await Promise.all([
+      env.DB.prepare('SELECT COUNT(*) AS totalScans, MAX(created_at) AS lastScanAt FROM scan_events WHERE dynamic_link_id = ?1').bind(dynamicLinkId).first<{ totalScans: number; lastScanAt: string | null }>(),
+      env.DB.prepare("SELECT substr(created_at, 1, 10) AS date, COUNT(*) AS scans FROM scan_events WHERE dynamic_link_id = ?1 AND created_at >= datetime('now', '-13 days') GROUP BY substr(created_at, 1, 10) ORDER BY date ASC").bind(dynamicLinkId).all<{ date: string; scans: number }>(),
+      env.DB.prepare('SELECT created_at AS createdAt, user_agent AS userAgent, referrer, country FROM scan_events WHERE dynamic_link_id = ?1 ORDER BY created_at DESC LIMIT 8').bind(dynamicLinkId).all(),
+    ]);
+    const byDate = new Map((dailyRows.results ?? []).map(row => [row.date, Number(row.scans)]));
+    const daily = Array.from({ length: 14 }, (_, offset) => {
+      const date = new Date(Date.now() - (13 - offset) * 86_400_000).toISOString().slice(0, 10);
+      return { date, scans: byDate.get(date) ?? 0 };
+    });
+    return { totalScans: Number(summary?.totalScans ?? 0), lastScanAt: summary?.lastScanAt ?? null, daily, recent: recentRows.results ?? [] };
   }
   if (procedure === 'dynamicQr.create') {
     const timestamp = now();

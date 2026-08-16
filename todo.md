@@ -199,3 +199,4 @@
 - [ ] 定位并修复 Google OAuth callback 已更新 D1 用户但浏览器仍无法保持 `app_session_id` 会话的问题，完成正式登录回归
 - [ ] 在 cookie 会话无法稳定持久化的情况下，实现并验证显式 OAuth 会话交换/恢复方案，确保 Team Workspace 可用
 - [x] 完成 QRKit 从代码、D1、OAuth、Functions、Dynamic QR、团队权限、SEO、测试、依赖和正式域名行为的系统审核，生成 `QRKIT_AUDIT_REPORT.md`、`audit-baseline.md`、`audit-production-seo.md` 与 `audit-references.md`；A-01 登录会话、A-05 统计准确性、A-06 邀请激活和真实认证 E2E 仍为未解决项
+- [x] 修复 Dynamic QR Pages Functions 统计：使用 COUNT/按日聚合/最近明细分离查询，并确保 scan event 写入失败不阻断公开重定向；新增 2 项回归测试，定向 Functions 测试 9 项通过、pnpm check 和 pnpm build 通过

@@ -30,19 +30,23 @@ export const onRequestGet: PagesFunction<PagesEnv> = async ({ request, env, para
     });
   }
 
-  const eventId = crypto.randomUUID();
-  await env.DB.prepare(
-    "INSERT INTO scan_events (id, dynamic_link_id, country, user_agent, referrer, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
-  )
-    .bind(
-      eventId,
-      link.id,
-      request.cf?.country || null,
-      safeHeader(request, "user-agent", 300) || null,
-      safeHeader(request, "referer", 500) || null,
-      new Date().toISOString(),
+  try {
+    const eventId = crypto.randomUUID();
+    await env.DB.prepare(
+      "INSERT INTO scan_events (id, dynamic_link_id, country, user_agent, referrer, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
     )
-    .run();
+      .bind(
+        eventId,
+        link.id,
+        request.cf?.country || null,
+        safeHeader(request, "user-agent", 300) || null,
+        safeHeader(request, "referer", 500) || null,
+        new Date().toISOString(),
+      )
+      .run();
+  } catch (error) {
+    console.error("[Dynamic QR] scan event write failed; continuing redirect", error);
+  }
 
   return Response.redirect(link.destination, 302);
 };
