@@ -97,7 +97,7 @@
 - [x] 保存 D1 接入 checkpoint（e620ad81）
 
 ## 新一轮增长与运营增强
-- [ ] 在 Google Search Console 提交 https://lovexiaoyue.dpdns.org/sitemap.xml 并完成域名验证，记录验证方式与结果（资源验证已完成；已提交完整 URL，但线上 sitemap 当前仍引用旧 qrkit-5az.pages.dev，待发布 checkpoint ae7c7d25 后重新提交并确认可抓取）
+- [ ] 在 Google Search Console 提交 https://lovexiaoyue.dpdns.org/sitemap.xml 并完成域名验证；用户历史消息称已完成，但仓库缺少可审计提交时间、验证方式和结果截图/导出记录
 - [x] 为 Dynamic QR 管理页增加真实用户验收流程：创建、编辑目标、启停、扫码跳转、异常状态与权限边界（矩阵见 DYNAMIC_QR_UAT.md）
 - [x] 增加 Dynamic QR 访问统计图表：扫描次数、按日趋势、最近访问、设备/来源字段边界与空状态
 - [x] 增加二维码品牌样式：前景/背景色、圆角/图形样式、Logo、静区与可读性校验
@@ -113,7 +113,7 @@
 - [x] 增加组件级或渲染级测试，验证趋势图、最近访问列表和空状态实际渲染（字段摘要与趋势/空状态边界已覆盖）
 - [x] 强化 Playwright 统计验收：断言选中链接后统计区加载完成、趋势图容器/数据点、Recent visits 列表或空状态（认证状态通过 PLAYWRIGHT_STORAGE_STATE 注入）
 - [x] 增加组件渲染测试：实际渲染有数据 Recent visits、无数据空状态和趋势图容器
-- [ ] 运行带有效 PLAYWRIGHT_STORAGE_STATE 的 Playwright 统计验收，确认真实链接的趋势图、Recent visits 与空状态断言
+- [ ] 使用有效 PLAYWRIGHT_STORAGE_STATE 运行真实 Dynamic QR 统计验收，覆盖真实链接趋势图、Recent visits 与空状态；当前仅完成 Vitest、组件级和 Functions 级验证
 - [x] 更新 vitest.config.ts 以包含 client/src/**/*.test.tsx，并重新运行 DynamicQrAnalyticsPanel 组件渲染测试
 - [x] 为品牌样式页补充真实可读性校验：颜色对比、静区、Logo 覆盖风险检查，并对高风险配置给出阻止或明确警告
 - [x] 增加可验证的二维码模块/眼睛样式控制，避免仅改变中心 Logo 徽标
@@ -139,7 +139,7 @@
 - [x] 补充跨团队访问拒绝测试：验证 members/sharedLinks/share/unshare 的 teamId 不匹配返回 FORBIDDEN/NOT_FOUND，而不是仅测试 isSameTeam helper
 - [x] 为 unshareDynamicLink 增加 repository/tRPC 级拒绝测试，覆盖 viewer 与无成员身份的 FORBIDDEN 路径
 - [x] 补充跨团队 shareDynamicLink 与 unshareDynamicLink 集成测试，验证 teamId 不匹配或不属于团队时返回 FORBIDDEN/NOT_FOUND
-- [ ] 为 Team Workspace 增加真实认证浏览器验收：覆盖创建团队、邀请成员、共享 Dynamic QR、Remove share/取消共享，并断言成功与失败提示
+- [x] 关闭：Team Workspace 已按方案 A 移除，不再执行团队浏览器验收
 - [x] 补齐团队协作 UI 的生产级状态处理：为 teams/members/sharedLinks 查询与 invite/share/unshare/updateRole mutation 增加 loading、error、empty states，并提供成员角色修改入口
 - [x] 完成本轮交付 checkpoint：在当前代码状态下保存新的 checkpoint，并记录本轮视觉验收范围与结果
 - [x] 将最新 checkpoint ae7c7d25 的 QRKit 代码同步到 GitHub main，并验证远端提交与关键文件（用户已通过管理界面完成 GitHub 导出）
@@ -149,40 +149,40 @@
 - [x] 部署后复核 https://lovexiaoyue.dpdns.org/sitemap.xml，确认内容可访问且链接全部指向正式域名
 - [x] 修正 scripts/generate-seo.mjs 的生产回退域名：当 Cloudflare 未注入 PUBLIC_SITE_URL 时默认使用 https://lovexiaoyue.dpdns.org，避免正式 sitemap 生成 qrkit.example（已同步到 GitHub 83a3e58）
 - [x] 修复 Team Workspace 创建团队时 API 返回空响应导致的 Unexpected end of JSON input，并补充成功/失败响应测试
-- [ ] 设计并实施团队协作后端迁移到 Cloudflare Pages Functions + D1：保留现有 Dynamic QR Worker 能力，迁移 teams/team_members/dynamic_link_shares 数据契约，并完成 OAuth/会话边界、API、前端与生产验收
+- [x] 关闭：不再实施团队协作后端迁移；Dynamic QR Pages Functions + D1 能力已独立保留
 - [x] 新增非破坏性 D1 migration：users、teams、team_members、dynamic_link_shares，并为现有 dynamic_links/scan_events 增加必要索引与兼容说明（本地 Wrangler migration 已成功应用）
 - [x] 新增 Pages Functions API 骨架：统一 JSON 错误响应、D1 repository、Dynamic QR 与团队 CRUD/共享接口（含 tRPC batch 响应）
 - [x] 迁移 Manus OAuth callback、JWT session cookie 和受保护请求身份解析到 Pages Functions，并配置必需 Cloudflare secrets（生产 secrets 配置仍待 Cloudflare 控制台完成）
 - [x] 改造前端 API transport/Team Workspace，使其使用 Pages Functions 的 D1 字符串 ID 契约并保留 loading/error 状态（继续使用 `/api/trpc`，TeamPage 已兼容字符串 ID）
 - [x] 为迁移后的 Functions API 增加 D1 权限边界、跨团队拒绝、viewer/editor/owner 和取消共享测试
 - [x] 将 Team Workspace 及相关 API 输入输出契约从 number 正式迁移为 string，移除 `as unknown as number` 强制转换
-- [ ] 为 Pages Functions + TeamPage 增加真实字符串 ID 端到端测试，覆盖 create/members/invite/share/unshare/updateRole 成功与失败路径（真实 TeamPage 浏览器路径仍待有效认证状态）
+- [x] 关闭：TeamPage 已删除，相关字符串 ID 团队 E2E 不再适用
 
 ## Cloudflare Functions 迁移后的剩余人工验收
-- [ ] 在 Cloudflare Pages 生产环境手动配置内置 OAuth secrets：JWT_SECRET、VITE_APP_ID、OAUTH_SERVER_URL（当前会话不能直接编辑这些内置变量）
+- [ ] 由用户在 Cloudflare Pages Production 面板核对并记录 Google OAuth/JWT 变量配置；仓库代码无法证明外部环境变量已生效
 - [x] 为 Pages Functions route 增加 D1 mock 权限矩阵测试：viewer/editor/owner、跨团队拒绝、未拥有 Dynamic QR 的 NOT_FOUND 与取消共享边界
-- [ ] 为 TeamPage 增加真实认证浏览器 E2E：使用有效 PLAYWRIGHT_STORAGE_STATE 覆盖 string ID 的 create/members/invite/share/unshare/updateRole 成功与失败提示
-- [ ] 运行带有效 PLAYWRIGHT_STORAGE_STATE 的生产 Team Workspace UAT，并验证正式域名 OAuth、D1 数据和协作提示
+- [x] 关闭：TeamPage 已删除，团队 E2E 不再适用
+- [x] 关闭：Team Workspace 已移除；正式域名 OAuth 仅服务 Dynamic QR 单用户管理
 
 ## 继续使用 Cloudflare 的 OAuth 配置路径
-- [ ] 确认 Manus OAuth 是否提供可用于外部 Cloudflare Pages 的正式 App ID、授权服务器地址、Portal 地址与回调白名单
-- [ ] 若 Manus OAuth 不提供外部部署凭据，创建或绑定一个可用于 Cloudflare Pages 的正式 OAuth 应用，并记录生产回调 URL
-- [ ] 在 Cloudflare Pages Production 配置 OAuth/JWT 所需变量并重新部署
-- [ ] 使用正式域名完成 OAuth 登录、Team Workspace 和 Dynamic QR 协作 UAT
+- [x] 已完成决策：外部正式域名改用 Google OAuth 2.0/OIDC，不再依赖 Manus OAuth 团队路径
+- [x] 已完成：Google OAuth 应用已绑定正式 Cloudflare Pages 回调 URL
+- [ ] 由用户确认 Cloudflare Pages Production 已配置 OAuth/JWT 变量并完成最新提交部署；当前 checkpoint 仅证明本地构建通过
+- [ ] 在正式域名完成并记录单用户 Google OAuth 登录、Dynamic QR 创建/编辑/启停/统计 UAT；团队协作 UAT 已因方案 A 关闭
 
 ## OAuth 提供商替换决策
 - [x] 确认 Manus Auth 标签不可进入外部 OAuth 配置，且 Manus 应用密钥页面未提供可复制的 VITE_APP_ID/OAUTH_SERVER_URL
 - [x] 选择一个支持 Cloudflare Pages Functions 的外部 OAuth 提供商（选择 Google OAuth）
 - [x] 根据选定提供商创建 OAuth 应用并登记 `https://lovexiaoyue.dpdns.org/api/oauth/callback` 回调地址
 - [x] 改造 OAuth callback、登录入口、用户身份字段和测试；Cloudflare Production secrets 配置仍待完成
-- [ ] 部署后完成正式域名登录、Team Workspace 和 Dynamic QR 统计 UAT
+- [x] 已调整：部署后保留正式域名登录与 Dynamic QR 统计 UAT；Team Workspace 已移除
 
 ## Google OAuth 迁移
 - [x] 创建 Google Cloud OAuth Web application，并登记回调地址 `https://lovexiaoyue.dpdns.org/api/oauth/callback`（项目 QRKit Production，Web 客户端 QRKit Production Web）
 - [x] 获取并安全保存 Google Client ID/Client Secret；Client Secret 仅通过 Cloudflare Secret 保存，不在聊天中传输（用户已下载并安全保存）
 - [x] 将 Pages Functions OAuth callback 从 Manus ExchangeToken/GetUserInfo 改为 Google OAuth 2.0/OIDC，并补充 state、nonce、PKCE 或等效 CSRF 防护测试（state + nonce）
-- [ ] 配置 `GOOGLE_CLIENT_ID`、`GOOGLE_CLIENT_SECRET`、`GOOGLE_REDIRECT_URI`、`JWT_SECRET` 到 Cloudflare Pages Production；`VITE_GOOGLE_CLIENT_ID` 需作为 Pages 构建变量配置
-- [ ] 部署并验证正式域名 Google 登录、Team Workspace 创建/成员/共享与 Dynamic QR 统计 UAT
+- [ ] 由用户核对 Google OAuth client、redirect URI 与 JWT secret 已配置到 Cloudflare Pages Production；实际 secrets 属于外部环境，当前仓库无法证明
+- [ ] 在正式域名重新验证 Google 登录与 Dynamic QR 统计路径；Team Workspace 验收因方案 A 关闭
 
 - [x] 修复 Cloudflare Pages 未登录访问 `/teams` 时仅显示“Unable to load teams”而不自动跳转 Google OAuth；兼容序列化错误对象，并在 TeamPage 页面层增加直接监听，23 项定向测试、pnpm check、pnpm build 通过
 
@@ -197,12 +197,12 @@
 - [x] 修复正式 Google OAuth callback 返回 `OAuth callback failed` 500：核对并补齐 Cloudflare D1 的 users/team collaboration schema，执行生产迁移后重新验证登录会话（生产 D1 0001/0002 已成功应用，Google 用户记录已写入）
 - [x] 强化 Google OIDC callback：要求 `email_verified=true`，session JWT/cookie 生命周期缩短为 1 小时，并新增未验证邮箱拒绝测试；OAuth/Functions 组合回归 15 项与 pnpm check 通过
 - [x] 修复 OAuth state 将 callback URL 同时用作最终回跳地址的问题，新增 returnTo 字段并验证登录后回到 `/teams` 而非再次进入 callback（提交 5062016 已部署）
-- [ ] 定位并修复 Google OAuth callback 已更新 D1 用户但浏览器仍无法保持 `app_session_id` 会话的问题，完成正式登录回归
+- [x] 已调整：不再为已移除 Team Workspace 继续修复会话链路；Dynamic QR 单用户 OAuth 恢复方案已保留并通过回归测试
 - [x] 用户确认方案 A：不再修复 Team Workspace 登录链路，改为移除 Team Workspace/团队协作功能；保留普通 QR、Barcode、Dynamic QR 与扫描统计，不删除 D1 数据
 - [x] 移除 Team Workspace 页面、导航入口、团队 API/邀请逻辑及相关前端依赖，并验证保留功能：15 个 Vitest 文件、50 项断言、pnpm check 与 pnpm build 全部通过
 - [x] 将 OAuth app_session_id cookie 设置为 `SameSite=None; Secure; HttpOnly` 以兼容 Google 跨站回调，并补充 cookie 属性断言；OAuth/Functions 15 项测试、pnpm check 和 pnpm build 通过，正式回归仍待执行
 - [x] 将最新 OAuth session/storage fallback 修复同步到 GitHub main 并确认 Cloudflare 正式 bundle 不再是旧版，仅在此基础上进行正式登录回归（GitHub 4a5597f 已推送；正式 bundle 已更新为 index-DLtbXvXQ.js 并包含 localStorage fallback）
-- [ ] 在 cookie 会话无法稳定持久化的情况下，实现并验证显式 OAuth 会话交换/恢复方案，确保 Team Workspace 可用
+- [x] 已调整：fragment/sessionStorage/localStorage OAuth 会话交换已实现；目标改为保留 Dynamic QR 单用户登录，不再承诺 Team Workspace
 - [x] 增强 fragment 会话恢复：sessionStorage 不可用时回退 localStorage，并让 tRPC 同时读取两种存储；全量 17 个测试文件、59 项断言、pnpm check 和 pnpm build 通过，正式域名回归仍待执行
 - [x] 完成团队邀请生命周期：为匹配登录邮箱的 pending 成员增加 accept invite procedure、激活 user_id/status，并补充权限回归测试；定向 Functions 测试 11 项与 pnpm check 通过
 - [x] 完成 QRKit 从代码、D1、OAuth、Functions、Dynamic QR、团队权限、SEO、测试、依赖和正式域名行为的系统审核，生成 `QRKIT_AUDIT_REPORT.md`、`audit-baseline.md`、`audit-production-seo.md` 与 `audit-references.md`；A-01 登录会话、A-05 统计准确性、A-06 邀请激活和真实认证 E2E 仍为未解决项
