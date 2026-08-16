@@ -5,7 +5,6 @@ import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createDynamicLink, deleteDynamicLink, getDynamicLinkStats, listDynamicLinks, updateDynamicLink } from "./dynamicQr";
-import { createTeam, inviteMember, listMembers, listSharedLinks, listTeams, shareDynamicLink, unshareDynamicLink, updateMemberRole } from './team';
 
 const idInput = z.string().min(1);
 const apiId = (value: number | string) => String(value);
@@ -24,16 +23,6 @@ export const appRouter = router({
     }),
   }),
 
-  team: router({
-    list: protectedProcedure.query(async ({ ctx }) => (await listTeams(ctx.user.id)).map(team => ({ ...team, id: apiId(team.id) }))),
-    create: protectedProcedure.input(z.object({ name: z.string().min(2).max(160) })).mutation(async ({ ctx, input }) => { const team = await createTeam(ctx.user.id, input.name, ctx.user.email ?? null); return { ...team, id: apiId(team.id) }; }),
-    members: protectedProcedure.input(z.object({ teamId: idInput })).query(({ ctx, input }) => listMembers(ctx.user.id, Number(input.teamId))),
-    invite: protectedProcedure.input(z.object({ teamId: idInput, email: z.string().email(), role: z.enum(['editor', 'viewer']) })).mutation(({ ctx, input }) => inviteMember(ctx.user.id, Number(input.teamId), input.email, input.role)),
-    updateRole: protectedProcedure.input(z.object({ teamId: idInput, memberId: idInput, role: z.enum(['owner', 'editor', 'viewer']) })).mutation(({ ctx, input }) => updateMemberRole(ctx.user.id, Number(input.teamId), Number(input.memberId), input.role)),
-    shareLink: protectedProcedure.input(z.object({ teamId: idInput, dynamicLinkId: idInput })).mutation(({ ctx, input }) => shareDynamicLink(ctx.user.id, Number(input.teamId), Number(input.dynamicLinkId))),
-    unshareLink: protectedProcedure.input(z.object({ teamId: idInput, dynamicLinkId: idInput })).mutation(({ ctx, input }) => unshareDynamicLink(ctx.user.id, Number(input.teamId), Number(input.dynamicLinkId))),
-    sharedLinks: protectedProcedure.input(z.object({ teamId: idInput })).query(({ ctx, input }) => listSharedLinks(ctx.user.id, Number(input.teamId))),
-  }),
 
   dynamicQr: router({
     list: protectedProcedure.query(async ({ ctx }) => (await listDynamicLinks(ctx.user.id)).map(link => ({ ...link, id: apiId(link.id) }))),

@@ -1,6 +1,6 @@
 # QRKit
 
-QRKit is a mobile-first, SEO-first QR Code and Barcode toolkit built with React 19, TypeScript, Vite, Tailwind CSS, tRPC, Drizzle ORM, Manus OAuth, and Cloudflare Pages/D1. Static inputs are processed locally whenever possible, while authenticated Dynamic QR management, analytics, branded batch generation, and team collaboration are backed by protected server procedures.
+QRKit is a mobile-first, SEO-first QR Code and Barcode toolkit built with React 19, TypeScript, Vite, Tailwind CSS, tRPC, Drizzle ORM, Manus OAuth, and Cloudflare Pages/D1. Static inputs are processed locally whenever possible, while authenticated single-user Dynamic QR management and analytics are backed by protected server procedures.
 
 ## Run locally
 
@@ -28,7 +28,7 @@ The requested `npm install`, `npm run dev`, and `npm run build` commands are als
 
 ## Architecture
 
-The tool registry in `client/src/lib/tools.ts` is the extension point for adding new tools. Payload builders, retail checksum helpers, and filename sanitization are kept separate from page UI. QR generation uses `qrcode`; barcode generation uses `jsbarcode`; both run in the browser. The current UI contains category routes, individual SEO tool routes, related tools, guides, legal pages, Dynamic QR management, analytics, Brand + Batch, and Team Workspace. Static generation remains local and independent from the authenticated application data path.
+The tool registry in `client/src/lib/tools.ts` is the extension point for adding new tools. Payload builders, retail checksum helpers, and filename sanitization are kept separate from page UI. QR generation uses `qrcode`; barcode generation uses `jsbarcode`; both run in the browser. The current UI contains category routes, individual SEO tool routes, related tools, guides, legal pages, Dynamic QR management, analytics, and Brand + Batch. Static generation remains local and independent from the authenticated application data path.
 
 ## SEO and privacy notes
 
@@ -36,7 +36,7 @@ Every route now writes its own title, description, canonical URL, Open Graph tag
 
 ## Performance and tests
 
-The homepage, generator pages, Blog pages, Dynamic QR, Brand + Batch, and Team Workspace are lazy-loaded through route-level `import()` boundaries. Run `pnpm test` for the full Vitest suite, `pnpm check` for TypeScript validation, `pnpm build` for the production build, and `pnpm test:e2e` for Playwright browser tests. The final regression suite includes 13 Vitest files and 40 passing assertions, while the local Playwright run completed 4 tests with 2 authentication/deployment-dependent scenarios skipped when no storage state or Worker URL was supplied.
+The homepage, generator pages, Blog pages, Dynamic QR, and Brand + Batch are lazy-loaded through route-level `import()` boundaries. Run `pnpm test` for the full Vitest suite, `pnpm check` for TypeScript validation, `pnpm build` for the production build, and `pnpm test:e2e` for Playwright browser tests. The current regression suite contains 15 Vitest files and 50 passing assertions; authentication/deployment-dependent browser scenarios remain opt-in when no storage state or Worker URL is supplied.
 
 ## Dynamic QR extension boundary
 
@@ -66,15 +66,13 @@ The Cloudflare Worker has a separate, concrete D1 path for edge-only redirect de
 
 The `/brand-batch` workspace supports foreground/background color selection, rounded or shaped QR modules and eyes, quiet-zone sizing, error-correction selection, optional logo placement, CSV/text batch input, per-row validation, preview states, and PNG/SVG ZIP export. Before export, QRKit evaluates contrast, quiet-zone size, and logo coverage against the selected error-correction level. Low-contrast and excessive-logo-risk configurations block export; smaller quiet zones or elevated but acceptable logo risk remain visible warnings.
 
-## Team collaboration
+## Single-user scope
 
-The `/teams` workspace supports team creation, pending member invitations, Owner/Editor/Viewer roles, and Dynamic QR sharing. Owners can invite members and change roles. Owners and Editors can share or remove a Dynamic QR link; Viewers can inspect permitted workspace data but cannot invite, change roles, share, or unshare links. All repository operations require active membership in the requested team, and resource queries are scoped by `teamId` and ownership to prevent cross-team access.
-
-The Team Workspace renders a `Remove share` action for each shared link. The action calls the protected `team.unshareLink` procedure and invalidates the shared-links query after success. The repository-level integration suite directly exercises viewer/editor/owner denial paths, inactive membership rejection, cross-team share/unshare rejection, owned-link sharing, successful unsharing, and unowned-link `NOT_FOUND` behavior.
+QRKit intentionally provides a single-user toolkit. Team Workspace, invitations, role management, and shared-link collaboration APIs have been removed from the application surface. Existing D1 team tables are not dropped automatically, which preserves production data and avoids destructive migrations; they are no longer read or written by the deployed application.
 
 ## Browser verification
 
-Run `pnpm test:e2e` to execute the Playwright suite. The local suite verifies URL QR PNG/SVG downloads, authenticated Dynamic QR boundaries, the Brand + Batch high-risk recovery flow, and the Team Workspace boundary. Set `PLAYWRIGHT_WORKER_URL` to run the deployed Worker redirect smoke test; it is intentionally skipped when no deployment URL is provided. The deterministic Vitest suite covers QR/barcode payloads, exports, analytics rendering, Dynamic QR repositories, Worker fixtures, Brand + Batch validation, and team permission boundaries.
+Run `pnpm test:e2e` to execute the Playwright suite. The local suite verifies URL QR PNG/SVG downloads, authenticated Dynamic QR boundaries, and the Brand + Batch high-risk recovery flow. Set `PLAYWRIGHT_WORKER_URL` to run the deployed Worker redirect smoke test; it is intentionally skipped when no deployment URL is provided. The deterministic Vitest suite covers QR/barcode payloads, exports, analytics rendering, Dynamic QR repositories, Worker fixtures, and Brand + Batch validation.
 
 ## Production domain and Search Console
 

@@ -39,7 +39,7 @@ describe("Google OAuth Pages callback", () => {
     vi.spyOn(globalThis, "fetch")
       .mockResolvedValueOnce(new Response(JSON.stringify({ access_token: "access-1" }), { status: 200 }))
       .mockResolvedValueOnce(new Response(JSON.stringify({ sub: "sub-1", name: "QRKit Owner", email: "owner@example.com", email_verified: false }), { status: 200 }));
-    const state = encodeOAuthState({ redirectUri: "https://lovexiaoyue.dpdns.org/api/oauth/callback", returnTo: "https://lovexiaoyue.dpdns.org/teams", nonce: "nonce-1" });
+    const state = encodeOAuthState({ redirectUri: "https://lovexiaoyue.dpdns.org/api/oauth/callback", returnTo: "https://lovexiaoyue.dpdns.org/dynamic-qr", nonce: "nonce-1" });
     const response = await onRequest({ request: requestFor(state), env: env() } as never);
     expect(response.status).toBe(403);
     expect(await response.json()).toEqual({ error: "Google email is not verified" });
@@ -49,11 +49,11 @@ describe("Google OAuth Pages callback", () => {
     vi.spyOn(globalThis, "fetch")
       .mockResolvedValueOnce(new Response(JSON.stringify({ access_token: "access-1" }), { status: 200 }))
       .mockResolvedValueOnce(new Response(JSON.stringify({ sub: "sub-1", name: "QRKit Owner", email: "owner@example.com", email_verified: true }), { status: 200 }));
-    const state = encodeOAuthState({ redirectUri: "https://lovexiaoyue.dpdns.org/api/oauth/callback", returnTo: "https://lovexiaoyue.dpdns.org/teams", nonce: "nonce-1" });
+    const state = encodeOAuthState({ redirectUri: "https://lovexiaoyue.dpdns.org/api/oauth/callback", returnTo: "https://lovexiaoyue.dpdns.org/dynamic-qr", nonce: "nonce-1" });
     const response = await onRequest({ request: requestFor(state), env: env() } as never);
     expect(response.status).toBe(302);
     const location = response.headers.get("location");
-    expect(location).toMatch(/^https:\/\/lovexiaoyue\.dpdns\.org\/teams#oauth_session=/);
+    expect(location).toMatch(/^https:\/\/lovexiaoyue\.dpdns\.org\/dynamic-qr#oauth_session=/);
     expect(response.headers.get("set-cookie")).toContain("app_session_id=");
     expect(response.headers.get("set-cookie")).toContain("HttpOnly");
     expect(response.headers.get("set-cookie")).toContain("SameSite=None");
