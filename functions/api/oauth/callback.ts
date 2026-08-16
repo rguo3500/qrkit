@@ -127,7 +127,7 @@ export const onRequest = async ({ request, env }: { request: Request; env: Env }
     const headers = new Headers({ location: destination.toString() });
     headers.append(
       "set-cookie",
-      `${SESSION_COOKIE}=${encodeURIComponent(session)}; Max-Age=${SESSION_SECONDS}; Path=/; HttpOnly; Secure; SameSite=Lax`,
+      `${SESSION_COOKIE}=${encodeURIComponent(session)}; Max-Age=${SESSION_SECONDS}; Path=/; HttpOnly; Secure; SameSite=None`,
     );
     // Keep the short-lived OAuth nonce cookie untouched here. Sending a second
     // Set-Cookie header through Pages can be normalized by an intermediary and

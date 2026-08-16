@@ -198,6 +198,9 @@
 - [x] 强化 Google OIDC callback：要求 `email_verified=true`，session JWT/cookie 生命周期缩短为 1 小时，并新增未验证邮箱拒绝测试；OAuth/Functions 组合回归 15 项与 pnpm check 通过
 - [x] 修复 OAuth state 将 callback URL 同时用作最终回跳地址的问题，新增 returnTo 字段并验证登录后回到 `/teams` 而非再次进入 callback（提交 5062016 已部署）
 - [ ] 定位并修复 Google OAuth callback 已更新 D1 用户但浏览器仍无法保持 `app_session_id` 会话的问题，完成正式登录回归
+- [ ] 修复正式 `team.list` 在 Google 登录回跳后仍返回 401 的会话传递链路，并用真实浏览器确认 Team Workspace 可加载
+- [x] 将 OAuth app_session_id cookie 设置为 `SameSite=None; Secure; HttpOnly` 以兼容 Google 跨站回调，并补充 cookie 属性断言；OAuth/Functions 15 项测试、pnpm check 和 pnpm build 通过，正式回归仍待执行
+- [x] 将最新 OAuth session/storage fallback 修复同步到 GitHub main 并确认 Cloudflare 正式 bundle 不再是旧版，仅在此基础上进行正式登录回归（GitHub 4a5597f 已推送；正式 bundle 已更新为 index-DLtbXvXQ.js 并包含 localStorage fallback）
 - [ ] 在 cookie 会话无法稳定持久化的情况下，实现并验证显式 OAuth 会话交换/恢复方案，确保 Team Workspace 可用
 - [x] 增强 fragment 会话恢复：sessionStorage 不可用时回退 localStorage，并让 tRPC 同时读取两种存储；全量 17 个测试文件、59 项断言、pnpm check 和 pnpm build 通过，正式域名回归仍待执行
 - [x] 完成团队邀请生命周期：为匹配登录邮箱的 pending 成员增加 accept invite procedure、激活 user_id/status，并补充权限回归测试；定向 Functions 测试 11 项与 pnpm check 通过

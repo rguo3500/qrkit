@@ -56,6 +56,7 @@ describe("Google OAuth Pages callback", () => {
     expect(location).toMatch(/^https:\/\/lovexiaoyue\.dpdns\.org\/teams#oauth_session=/);
     expect(response.headers.get("set-cookie")).toContain("app_session_id=");
     expect(response.headers.get("set-cookie")).toContain("HttpOnly");
+    expect(response.headers.get("set-cookie")).toContain("SameSite=None");
     expect((env().DB as never)).toBeDefined();
   });
 });
