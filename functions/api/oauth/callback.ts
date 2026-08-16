@@ -12,7 +12,7 @@ type Env = {
 
 const SESSION_COOKIE = "app_session_id";
 const STATE_COOKIE = "__Host-oauth_state";
-const ONE_YEAR_SECONDS = 60 * 60 * 24 * 365;
+const SESSION_SECONDS = 60 * 60;
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const GOOGLE_USERINFO_URL = "https://openidconnect.googleapis.com/v1/userinfo";
 
@@ -90,6 +90,7 @@ export const onRequest = async ({ request, env }: { request: Request; env: Env }
       email_verified?: boolean;
     };
     if (!info.sub) return response({ error: "Google subject missing from user info" }, 400);
+    if (info.email_verified !== true || !info.email) return response({ error: "Google email is not verified" }, 403);
 
     const timestamp = new Date().toISOString();
     const openId = `google:${info.sub}`;
@@ -115,7 +116,7 @@ export const onRequest = async ({ request, env }: { request: Request; env: Env }
       email: info.email ?? "",
     })
       .setProtectedHeader({ alg: "HS256", typ: "JWT" })
-      .setExpirationTime(`${ONE_YEAR_SECONDS}s`)
+      .setExpirationTime(`${SESSION_SECONDS}s`)
       .sign(new TextEncoder().encode(env.JWT_SECRET));
 
     const fallback = `${url.origin}/`;
@@ -126,7 +127,7 @@ export const onRequest = async ({ request, env }: { request: Request; env: Env }
     const headers = new Headers({ location: destination.toString() });
     headers.append(
       "set-cookie",
-      `${SESSION_COOKIE}=${encodeURIComponent(session)}; Max-Age=${ONE_YEAR_SECONDS}; Path=/; HttpOnly; Secure; SameSite=Lax`,
+      `${SESSION_COOKIE}=${encodeURIComponent(session)}; Max-Age=${SESSION_SECONDS}; Path=/; HttpOnly; Secure; SameSite=Lax`,
     );
     // Keep the short-lived OAuth nonce cookie untouched here. Sending a second
     // Set-Cookie header through Pages can be normalized by an intermediary and

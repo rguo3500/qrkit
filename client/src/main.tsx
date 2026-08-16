@@ -44,19 +44,18 @@ const trpcClient = trpc.createClient({
         // (Safari ITP / private browsing / WebView), the runtime mirrors the
         // session into sessionStorage so we can forward it as a Bearer token.
         // The regular OAuth cookie flow keeps working and takes priority server-side.
-        try {
-          const raw = sessionStorage.getItem("manus-cookie");
-          if (raw) {
-            const prefix = `${COOKIE_NAME}=`;
-            const pair = raw.split(";").find(s => s.trim().startsWith(prefix));
-            const token = pair?.trim().slice(prefix.length);
-            if (token) {
-              return { Authorization: `Bearer ${token}` };
+                  try {
+            const raw = sessionStorage.getItem("manus-cookie") ?? localStorage.getItem("manus-cookie");
+            if (raw) {
+              const prefix = `${COOKIE_NAME}=`;
+              const pair = raw.split(";").find(s => s.trim().startsWith(prefix));
+              const token = pair?.trim().slice(prefix.length);
+              if (token) return { Authorization: `Bearer ${token}` };
             }
+          } catch {
+            // Browser storage unavailable; the regular cookie path remains active.
           }
-        } catch {
-          // sessionStorage unavailable
-        }
+
         return {};
       },
       fetch(input, init) {

@@ -13,10 +13,11 @@ export const restoreOAuthSession = () => {
   const token = params.get("oauth_session");
   if (!token) return;
   try {
-    sessionStorage.setItem("manus-cookie", `${COOKIE_NAME}=${token}`);
+    const value = `${COOKIE_NAME}=${token}`;
+    try { sessionStorage.setItem("manus-cookie", value); } catch { localStorage.setItem("manus-cookie", value); }
     window.history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
   } catch {
-    // sessionStorage/history can be unavailable in private or embedded contexts.
+    // Storage/history can be unavailable in private or embedded contexts.
   }
 };
 

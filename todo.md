@@ -194,10 +194,12 @@
 - [x] 清理同步 ZIP 中误提交的 `.wrangler/state` 本地缓存与 `test-results` 生成物，补充忽略规则并同步干净提交到 GitHub main（干净提交 af732a8 已强制同步）
 - [x] 修复正式域名 `/teams` 生产环境仍出现 `Cannot read properties of null (reading 'message')` 的错误边界崩溃，并重新部署验证（提交 62a2ec8 已部署；正式域名已正常渲染 Team Workspace，并显示可恢复的“Please sign in again”状态，不再白屏）
 - [x] 为 Team Workspace 的未登录错误状态增加显式 Google 登录按钮，确保即使自动跳转未触发，用户仍可从页面完成 OAuth 登录（提交 698e9d5 已部署，正式域名按钮已显示并成功打开 Google 账号选择页）
-- [ ] 修复正式 Google OAuth callback 返回 `OAuth callback failed` 500：核对并补齐 Cloudflare D1 的 users/team collaboration schema，执行生产迁移后重新验证登录会话
+- [x] 修复正式 Google OAuth callback 返回 `OAuth callback failed` 500：核对并补齐 Cloudflare D1 的 users/team collaboration schema，执行生产迁移后重新验证登录会话（生产 D1 0001/0002 已成功应用，Google 用户记录已写入）
+- [x] 强化 Google OIDC callback：要求 `email_verified=true`，session JWT/cookie 生命周期缩短为 1 小时，并新增未验证邮箱拒绝测试；OAuth/Functions 组合回归 15 项与 pnpm check 通过
 - [x] 修复 OAuth state 将 callback URL 同时用作最终回跳地址的问题，新增 returnTo 字段并验证登录后回到 `/teams` 而非再次进入 callback（提交 5062016 已部署）
 - [ ] 定位并修复 Google OAuth callback 已更新 D1 用户但浏览器仍无法保持 `app_session_id` 会话的问题，完成正式登录回归
 - [ ] 在 cookie 会话无法稳定持久化的情况下，实现并验证显式 OAuth 会话交换/恢复方案，确保 Team Workspace 可用
+- [x] 增强 fragment 会话恢复：sessionStorage 不可用时回退 localStorage，并让 tRPC 同时读取两种存储；全量 17 个测试文件、59 项断言、pnpm check 和 pnpm build 通过，正式域名回归仍待执行
 - [x] 完成团队邀请生命周期：为匹配登录邮箱的 pending 成员增加 accept invite procedure、激活 user_id/status，并补充权限回归测试；定向 Functions 测试 11 项与 pnpm check 通过
 - [x] 完成 QRKit 从代码、D1、OAuth、Functions、Dynamic QR、团队权限、SEO、测试、依赖和正式域名行为的系统审核，生成 `QRKIT_AUDIT_REPORT.md`、`audit-baseline.md`、`audit-production-seo.md` 与 `audit-references.md`；A-01 登录会话、A-05 统计准确性、A-06 邀请激活和真实认证 E2E 仍为未解决项
 - [x] 修复 Dynamic QR Pages Functions 统计：使用 COUNT/按日聚合/最近明细分离查询，并确保 scan event 写入失败不阻断公开重定向；新增 2 项回归测试，定向 Functions 测试 9 项通过、pnpm check 和 pnpm build 通过

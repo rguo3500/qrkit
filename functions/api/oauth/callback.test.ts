@@ -35,10 +35,20 @@ describe("Google OAuth Pages callback", () => {
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
+  it("rejects a Google identity without a verified email", async () => {
+    vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(new Response(JSON.stringify({ access_token: "access-1" }), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ sub: "sub-1", name: "QRKit Owner", email: "owner@example.com", email_verified: false }), { status: 200 }));
+    const state = encodeOAuthState({ redirectUri: "https://lovexiaoyue.dpdns.org/api/oauth/callback", returnTo: "https://lovexiaoyue.dpdns.org/teams", nonce: "nonce-1" });
+    const response = await onRequest({ request: requestFor(state), env: env() } as never);
+    expect(response.status).toBe(403);
+    expect(await response.json()).toEqual({ error: "Google email is not verified" });
+  });
+
   it("exchanges Google code, upserts the user, and creates the QRKit session", async () => {
     vi.spyOn(globalThis, "fetch")
       .mockResolvedValueOnce(new Response(JSON.stringify({ access_token: "access-1" }), { status: 200 }))
-      .mockResolvedValueOnce(new Response(JSON.stringify({ sub: "sub-1", name: "QRKit Owner", email: "owner@example.com" }), { status: 200 }));
+      .mockResolvedValueOnce(new Response(JSON.stringify({ sub: "sub-1", name: "QRKit Owner", email: "owner@example.com", email_verified: true }), { status: 200 }));
     const state = encodeOAuthState({ redirectUri: "https://lovexiaoyue.dpdns.org/api/oauth/callback", returnTo: "https://lovexiaoyue.dpdns.org/teams", nonce: "nonce-1" });
     const response = await onRequest({ request: requestFor(state), env: env() } as never);
     expect(response.status).toBe(302);
