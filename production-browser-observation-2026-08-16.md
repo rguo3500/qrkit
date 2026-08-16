@@ -6,14 +6,14 @@ Visited `https://lovexiaoyue.dpdns.org/` and `https://lovexiaoyue.dpdns.org/dyna
 
 ## Observed results
 
-The formal-domain homepage loaded successfully with the QRKit title, QR and Barcode entry points, local-first privacy copy, and no visible Teams navigation item. The homepage content matches the single-user public toolkit direction.
+The formal-domain homepage loaded successfully with the QRKit title, QR and Barcode entry points, local-first privacy copy, and no visible Teams navigation item in the passive homepage extraction.
 
-The formal-domain `/dynamic-qr` route loaded successfully and displayed the Dynamic QR workspace. It showed the draft-mode copy, a sign-in-to-persist instruction, form labels for slug/label/destination/active state, and a redirect preview. The page did not expose a Teams route. The visible preview used `https://qrkit.example/campaign`, which is a draft/preview value and must not be treated as proof of a production D1 record or a real scan event.
+In the user-controlled authenticated browser, the formal `/dynamic-qr` page displayed `Signed in as 郭睿`, the saved `Spring campaign` link, and a visible `TEAMS` navigation item. The page still showed the old English-only workspace labels and the save operation had previously returned `Unable to transform response from server`.
+
+## Deployment conclusion
+
+The visible `TEAMS` navigation in the authenticated production page is decisive evidence that the current formal-domain deployment is not the latest single-user checkpoint. The local source and latest checkpoint removed the Team Workspace route and navigation. Therefore the production error cannot yet be used to judge the latest Functions response fix: Cloudflare Pages is serving an older deployment or a different repository/branch/build output.
 
 ## Evidence limits
 
-These passive page observations prove that the public site and Dynamic QR route render. They do not prove that Google OAuth completed, that Cloudflare Production secrets are configured, that a real Dynamic QR was created in D1, or that authenticated scan statistics were verified. Those items remain in `todo.md` and `PRODUCTION_VERIFICATION.md` until the user performs and records the corresponding authenticated actions.
-
-## Post-fix observation
-
-After checkpoint `1b057c15` was published, the formal `/dynamic-qr` route still rendered successfully, but the passive extraction showed `Draft mode / sign in to persist this link` rather than an authenticated state. The page therefore confirms route availability only; it does not confirm that the signed-in browser used for the screenshot received the new bundle or that the Update mutation succeeded. A fresh authenticated click is still required.
+The browser page proves the old production bundle is active, but does not by itself identify the Cloudflare project, branch, or deployment ID. The next required action is to verify Cloudflare Pages GitHub repository/branch/build settings and deploy checkpoint `6a037894` (or the corresponding latest GitHub commit), then retest `/dynamic-qr` and check for `x-qrkit-trpc: numeric-error-v2` on the failing API request.
